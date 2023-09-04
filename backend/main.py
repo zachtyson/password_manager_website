@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from db.session import database, engine
-from db.models import Base
+from models.user import Base
 from api.routes import user_registration_routes
 
 app = FastAPI()
