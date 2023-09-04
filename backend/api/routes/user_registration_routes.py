@@ -32,6 +32,15 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.post("/users", response_model=UserResponse)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+
+    existing_email = db.query(User).filter(User.email == user.email).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
     db_user = User(username=user.username, email=user.email, hashed_password=user.password)
     db.add(db_user)
     db.commit()
