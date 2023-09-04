@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.models import User
+from models.user import User
 from db.session import SessionLocal
-from db.schemas import UserCreate, UserInDB, UserUpdate, UserResponse
+from schemas.user import UserCreate, UserUpdate, UserResponse
 from typing import List
+from core.security import get_password_hash
 
 router = APIRouter()
 
@@ -32,6 +33,17 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.post("/users", response_model=UserResponse)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+
+    existing_email = db.query(User).filter(User.email == user.email).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    user.password = get_password_hash(user.password)
+
     db_user = User(username=user.username, email=user.email, hashed_password=user.password)
     db.add(db_user)
     db.commit()
