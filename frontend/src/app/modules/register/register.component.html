@@ -1,23 +1,23 @@
 <div class="register-container">
   <h2>Register</h2>
-  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="register-form">
+  <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm" class="register-form">
 
     <!-- Username -->
     <mat-form-field class="form-group">
       <mat-label>Username</mat-label>
-      <input matInput type="text" id="username" name="username" ngModel required>
+      <input matInput type="text" id="username" name="username" [(ngModel)]="user.username" required>
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="form-group">
       <mat-label>Email</mat-label>
-      <input matInput type="email" id="email" name="email" ngModel required>
+      <input matInput type="email" id="email" name="email" [(ngModel)]="user.email" required>
     </mat-form-field>
 
     <!-- Password -->
     <mat-form-field class="form-group">
       <mat-label>Password</mat-label>
-      <input matInput type="password" id="password" name="password" ngModel required>
+      <input matInput type="password" id="password" name="password" [(ngModel)]="user.password" required>
     </mat-form-field>
 
     <!-- Confirm Password -->
