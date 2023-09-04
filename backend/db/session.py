@@ -10,7 +10,7 @@ if DATABASE_URL is None:
 DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://")
 
 # Create the engine
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_size=5, max_overflow=1)
 
 # Create a session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
