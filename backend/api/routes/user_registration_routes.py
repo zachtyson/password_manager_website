@@ -4,6 +4,7 @@ from models.user import User
 from db.session import SessionLocal
 from schemas.user import UserCreate, UserUpdate, UserResponse
 from typing import List
+from core.security import get_password_hash
 
 router = APIRouter()
 
@@ -40,6 +41,8 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_email = db.query(User).filter(User.email == user.email).first()
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    user.password = get_password_hash(user.password)
 
     db_user = User(username=user.username, email=user.email, hashed_password=user.password)
     db.add(db_user)
