@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from db.session import database, engine
 from db.models import Base
-from api.routes import notes_routes
+from api.routes import user_registration_routes
 
 app = FastAPI()
 
@@ -18,4 +18,4 @@ async def shutdown():
     await database.disconnect()
 
 
-app.include_router(notes_routes.router)
+app.include_router(user_registration_routes.router)
