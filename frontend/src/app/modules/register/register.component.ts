@@ -18,6 +18,8 @@ export class RegisterComponent {
     password: '',
   }
 
+  isSubmittedSuccessfully: boolean = false;
+
   constructor(private registerService: RegisterService) {}
 
   onSubmit(form:NgForm) {
@@ -25,9 +27,9 @@ export class RegisterComponent {
       return;
     }
     this.registerService.registerUser(this.user).subscribe(response => {
-      console.log(response);
+      this.isSubmittedSuccessfully = true;
     }, error => {
-      console.log(error);
+      this.isSubmittedSuccessfully = false;
     });
   }
 }
