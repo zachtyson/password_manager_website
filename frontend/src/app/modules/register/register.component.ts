@@ -31,8 +31,14 @@ export class RegisterComponent {
     if(this.user.password == undefined || this.user.email == undefined || this.user.username == undefined) {
       return;
     }
+    let p = await this.securityService.hashPassword(this.user.password);
+    const newUser: User = {
+      username: this.user.username,
+      email: this.user.email,
+      password: p
+    }
     this.user.password = await this.securityService.hashPassword(this.user.password);
-    this.registerService.registerUser(this.user).subscribe(response => {
+    this.registerService.registerUser(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
     }, error => {
