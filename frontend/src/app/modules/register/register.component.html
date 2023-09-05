@@ -32,3 +32,6 @@
 <div *ngIf="isSubmittedSuccessfully && isSubmitted" class="alert alert-success">
   Submitted successfully!
 </div>
+<div *ngIf="!isSubmittedSuccessfully && isSubmitted">
+  Something went wrong!
+</div>
