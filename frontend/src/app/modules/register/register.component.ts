@@ -3,6 +3,7 @@
 import { Component } from '@angular/core';
 import { User } from '../../core/models/user.model';
 import { RegisterService } from '../../core/services/register/register.service';
+import { SecurityService} from "../../core/services/security/security.service";
 import {NgForm} from "@angular/forms";
 
 @Component({
@@ -20,12 +21,16 @@ export class RegisterComponent {
 
   isSubmittedSuccessfully: boolean = false;
 
-  constructor(private registerService: RegisterService) {}
+  constructor(private registerService: RegisterService, private securityService: SecurityService) {}
 
-  onSubmit(form:NgForm) {
-    if(form.invalid){
+  async onSubmit(form: NgForm) {
+    if (form.invalid) {
       return;
     }
+    if(this.user.password == undefined || this.user.email == undefined || this.user.username == undefined) {
+      return;
+    }
+    this.user.password = await this.securityService.hashPassword(this.user.password);
     this.registerService.registerUser(this.user).subscribe(response => {
       this.isSubmittedSuccessfully = true;
     }, error => {
