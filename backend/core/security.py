@@ -2,11 +2,23 @@ from jose import jwt
 from datetime import datetime, timedelta
 from typing import Union, Any
 from passlib.context import CryptContext
+from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 access_token_minutes = 60
 secret_key = "secret"
 algorithm = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str
 
 
 def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:

@@ -1,5 +1,4 @@
-from typing import Optional
-
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
@@ -40,3 +39,4 @@ class UserResponse(UserBase):
 
     class Config:
         orm_mode = True
+
