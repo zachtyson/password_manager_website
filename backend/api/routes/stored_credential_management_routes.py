@@ -61,7 +61,11 @@ async def share_credential(token: Annotated[str, Depends(oauth2_scheme)],
     except JWTError:
         raise credentials_exception
     user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Username not found")
     credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
+    if not credential:
+        raise HTTPException(status_code=404, detail="Credential id not found")
     credential.user.append(user)
     db.commit()
     return credential
@@ -83,7 +87,11 @@ async def unshare_credential(token: Annotated[str, Depends(oauth2_scheme)],
     except JWTError:
         raise credentials_exception
     user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Username not found")
     credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
+    if not credential:
+        raise HTTPException(status_code=404, detail="Credential id not found")
     credential.user.remove(user)
     db.commit()
     return credential
