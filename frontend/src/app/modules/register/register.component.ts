@@ -20,6 +20,7 @@ export class RegisterComponent {
   }
 
   isSubmittedSuccessfully: boolean = false;
+  isSubmitted: boolean = false;
 
   constructor(private registerService: RegisterService, private securityService: SecurityService) {}
 
@@ -32,9 +33,11 @@ export class RegisterComponent {
     }
     this.user.password = await this.securityService.hashPassword(this.user.password);
     this.registerService.registerUser(this.user).subscribe(response => {
+      this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
     }, error => {
       this.isSubmittedSuccessfully = false;
+      this.isSubmitted = true;
     });
   }
 }
