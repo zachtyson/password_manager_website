@@ -16,8 +16,25 @@ class CredCreate(CredBase):
     password: str
 
 
+# Used for getting all information on a credential
 class CredInDB(CredBase):
     id: int
+    owner_id: int
+    username: Optional[str] = None
+    email: Optional[str] = None
+    encrypted_password: str
+    added_date: datetime
+    last_accessed_date: datetime
+    shared_users: List[UserBase]
+
+    class Config:
+        orm_mode = True
+
+
+# Used for getting all information on a credential except the list of users shared with
+class CredInDBShared(CredBase):
+    id: int
+    owner_id: int
     username: Optional[str] = None
     email: Optional[str] = None
     encrypted_password: str
@@ -40,6 +57,7 @@ class CredUpdate(CredBase):
 # username, or password
 class CredResponse(CredBase):
     id: int
+    owner_id: int
     added_date: datetime
     last_accessed_date: datetime
     shared_users: List[UserBase]
