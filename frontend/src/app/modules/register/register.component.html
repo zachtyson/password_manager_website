@@ -1,33 +1,36 @@
 <div *ngIf="!isSubmittedSuccessfully && !isSubmitted" class="register-container">
   <h2>Register</h2>
-  <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm" class="register-form">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
     <!-- Username -->
     <mat-form-field class="form-group">
       <mat-label>Username</mat-label>
-      <input matInput type="text" id="username" name="username" [(ngModel)]="user.username" required>
+      <input matInput type="text" formControlName="username">
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="form-group">
       <mat-label>Email</mat-label>
-      <input matInput type="email" id="email" name="email" [(ngModel)]="user.email" required>
+      <input matInput type="email" formControlName="email">
     </mat-form-field>
 
     <!-- Password -->
     <mat-form-field class="form-group">
       <mat-label>Password</mat-label>
-      <input matInput type="password" id="password" name="password" [(ngModel)]="user.password" required>
+      <input matInput type="password" formControlName="password">
     </mat-form-field>
 
     <!-- Confirm Password -->
     <mat-form-field class="form-group">
       <mat-label>Confirm Password</mat-label>
-      <input matInput type="password" id="confirmPassword" name="confirmPassword" ngModel required>
+      <input matInput type="password" formControlName="confirmPassword">
+      <mat-error *ngIf="passwordMismatch">Passwords do not match!</mat-error>
     </mat-form-field>
 
-    <button mat-raised-button type="submit" [disabled]="!registerForm.valid" color="primary">Register</button>
+    <button mat-raised-button type="submit" [disabled]="!registerForm.valid || passwordMismatch" color="primary">Register</button>
+
   </form>
+
 </div>
 <div *ngIf="isSubmittedSuccessfully && isSubmitted" class="alert alert-success">
   Submitted successfully!
