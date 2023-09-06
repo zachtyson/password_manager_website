@@ -1,5 +1,3 @@
-// src/app/register/register.component.ts
-
 import { Component } from '@angular/core';
 import { User } from '../../core/models/user.model';
 import { RegisterService } from '../../core/services/register/register.service';
@@ -37,21 +35,25 @@ export class RegisterComponent {
   ngOnInit() {
     this.registerForm.valueChanges.subscribe(() => {
       if(this.registerForm == null) return;
-      // @ts-ignore
-      if(this.registerForm.get('password').value == null || this.registerForm.get('confirmPassword').value == null) {
+      if(this.registerForm.get('password')?.value == null || this.registerForm.get('confirmPassword')?.value == null) {
         this.passwordMismatch = true;
       }
-      // @ts-ignore
-      this.passwordMismatch = this.registerForm.get('password').value !== this.registerForm.get('confirmPassword').value;
+      this.passwordMismatch = this.registerForm.get('password')?.value !== this.registerForm.get('confirmPassword')?.value;
     });
   }
   async onSubmit() {
     if (this.registerForm.invalid) {
       return;
     }
-    if(this.user.password == undefined || this.user.email == undefined || this.user.username == undefined) {
+    const formValues = this.registerForm.value;
+    if(formValues.username == undefined || formValues.password == undefined || formValues.email == undefined || formValues.confirmPassword == undefined) {
       return;
     }
+    this.user.username = formValues.username;
+    this.user.email = formValues.email;
+    this.user.password = formValues.password;
+    this.confirmPassword = formValues.confirmPassword;
+
     if (this.user.password !== this.confirmPassword) {
       this.passwordMismatch = true;
       return;
@@ -65,7 +67,6 @@ export class RegisterComponent {
       email: this.user.email,
       password: p
     }
-    this.user.password = await this.securityService.hashPassword(this.user.password);
     this.registerService.registerUser(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
