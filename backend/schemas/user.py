@@ -1,5 +1,4 @@
-from typing import Optional
-
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
@@ -33,10 +32,14 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
 
 
+from schemas.stored_credential import CredResponse
+
+
 # Used for returning user information with id and created_date, does not include password
 class UserResponse(UserBase):
     id: int
     created_date: datetime
+    stored_credentials: List[CredResponse]
 
     class Config:
         orm_mode = True
