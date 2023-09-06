@@ -2,10 +2,19 @@
   <h2>Login</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
+    <!-- Username/Email Toggle -->
+    <button mat-button (click)="toggleEmailLogin()">{{ isEmailLogin ? 'Use Username' : 'Use Email' }}</button>
+
     <!-- Username -->
-    <mat-form-field class="form-group">
+    <mat-form-field *ngIf="!isEmailLogin" class="form-group">
       <mat-label>Username</mat-label>
       <input matInput type="text" formControlName="username">
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field *ngIf="isEmailLogin" class="form-group">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email">
     </mat-form-field>
 
     <!-- Password -->
@@ -15,9 +24,7 @@
     </mat-form-field>
 
     <button mat-raised-button type="submit" [disabled]="!loginForm.valid" color="primary">Login</button>
-
   </form>
-
 </div>
 <div *ngIf="isSubmittedSuccessfully && isSubmitted" class="alert alert-success">
   Submitted successfully!

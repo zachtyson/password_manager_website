@@ -16,33 +16,40 @@ export class LoginComponent {
   user: User = {
     username: '',
     password: '',
+    email: '',
   }
+  isEmailLogin: boolean = false;
   isSubmittedSuccessfully: boolean = false;
   isSubmitted: boolean = false;
   loginForm = new FormGroup({
-    username: new FormControl('', Validators.required),
+    username: new FormControl(''),
+    email: new FormControl('', [Validators.email]), // Add email control
     password: new FormControl('', Validators.required),
   });
 
   constructor(private loginService: LoginService, private securityService: SecurityService,private router: Router) {
 
   }
-
+  toggleEmailLogin() {
+    this.isEmailLogin = !this.isEmailLogin;
+    if (this.isEmailLogin) {
+      this.loginForm.get('username')?.reset();
+      this.loginForm.get('email')?.setValidators([Validators.required, Validators.email]);
+      this.loginForm.get('username')?.clearValidators();
+    } else {
+      this.loginForm.get('email')?.reset();
+      this.loginForm.get('username')?.setValidators(Validators.required);
+      this.loginForm.get('email')?.clearValidators();
+    }
+    this.loginForm.get('email')?.updateValueAndValidity();
+    this.loginForm.get('username')?.updateValueAndValidity();
+  }
   ngOnInit() {
     if(this.loginService.checkIfUserIsLoggedIn()) {
       //if user is logged in, redirect to home page
       this.router.navigate(['/']);
     }
     this.loginForm.valueChanges.subscribe(() => {
-      if (this.loginForm == null ||
-        this.loginForm.get('password') == null ||
-        this.loginForm.get('username') == null) {
-        return;
-      }
-      if (!this.loginForm?.get('password')?.value ||
-        !this.loginForm?.get('username')?.value) {
-        return;
-      }
     });
   }
   async onSubmit() {
@@ -51,19 +58,23 @@ export class LoginComponent {
     }
 
     const formValues = this.loginForm.value;
-    if(formValues.username == undefined || formValues.password == undefined) {
+    if((formValues.username == undefined && formValues.email == undefined) || formValues.password == undefined) {
       return;
     }
     const hashedPassword = await this.securityService.hashPassword(formValues.password);
-    const newUser: User = {
-      username: formValues.username,
+    let newUser: User = {
       password: hashedPassword,
-    };
+    }
+
+    if (this.isEmailLogin && formValues.email) {
+      newUser.email = formValues.email;
+    } else if (formValues.username) {
+      newUser.username = formValues.username;
+    }
 
     this.loginService.loginUser(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
-      console.log(response);
       response = JSON.parse(JSON.stringify(response));
       localStorage.setItem('access_token', `Bearer ${response.access_token}`);
     }, error => {
