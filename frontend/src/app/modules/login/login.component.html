@@ -1,1 +1,27 @@
-<p>login works!</p>
+<div *ngIf="!isSubmittedSuccessfully && !isSubmitted" class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+    <!-- Username -->
+    <mat-form-field class="form-group">
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username">
+    </mat-form-field>
+
+    <!-- Password -->
+    <mat-form-field class="form-group">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password">
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" [disabled]="!loginForm.valid" color="primary">Login</button>
+
+  </form>
+
+</div>
+<div *ngIf="isSubmittedSuccessfully && isSubmitted" class="alert alert-success">
+  Submitted successfully!
+</div>
+<div *ngIf="!isSubmittedSuccessfully && isSubmitted">
+  Something went wrong!
+</div>
