@@ -1,5 +1,3 @@
-// src/app/register/register.component.ts
-
 import { Component } from '@angular/core';
 import { User } from '../../core/models/user.model';
 import { RegisterService } from '../../core/services/register/register.service';
@@ -47,9 +45,15 @@ export class RegisterComponent {
     if (this.registerForm.invalid) {
       return;
     }
-    if(this.user.password == undefined || this.user.email == undefined || this.user.username == undefined) {
+    const formValues = this.registerForm.value;
+    if(formValues.username == undefined || formValues.password == undefined || formValues.email == undefined || formValues.confirmPassword == undefined) {
       return;
     }
+    this.user.username = formValues.username;
+    this.user.email = formValues.email;
+    this.user.password = formValues.password;
+    this.confirmPassword = formValues.confirmPassword;
+
     if (this.user.password !== this.confirmPassword) {
       this.passwordMismatch = true;
       return;
