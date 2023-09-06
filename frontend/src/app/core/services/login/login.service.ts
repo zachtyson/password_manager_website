@@ -17,4 +17,14 @@ export class LoginService {
     }
     return this.http.post<any>(this.API_URL+"/login",formData)
   }
+
+  checkIfUserIsLoggedIn():boolean{
+    const token = localStorage.getItem('access_token');
+    //todo: check if token is valid and not expired
+    //can't do this until an api endpoint is created to check if token is valid
+    if(token == null) {
+      return false;
+    }
+    return true;
+  }
 }

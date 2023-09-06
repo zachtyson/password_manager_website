@@ -3,6 +3,7 @@ import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {User} from "../../core/models/user.model";
 import {SecurityService} from "../../core/services/security/security.service";
 import {LoginService} from "../../core/services/login/login.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -23,11 +24,15 @@ export class LoginComponent {
     password: new FormControl('', Validators.required),
   });
 
-  constructor(private loginService: LoginService, private securityService: SecurityService) {
+  constructor(private loginService: LoginService, private securityService: SecurityService,private router: Router) {
 
   }
 
   ngOnInit() {
+    if(this.loginService.checkIfUserIsLoggedIn()) {
+      //if user is logged in, redirect to home page
+      this.router.navigate(['/']);
+    }
     this.loginForm.valueChanges.subscribe(() => {
       if (this.loginForm == null ||
         this.loginForm.get('password') == null ||
