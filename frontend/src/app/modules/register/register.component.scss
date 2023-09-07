@@ -1,36 +1,45 @@
-/* Ensure body or main container has this style to center the register-container */
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f5f5f5; /* a light background to contrast the white card */
 }
 
 .register-container {
   width: 100%;
-  max-width: 400px; /* To ensure the form does not take the full width on larger screens */
-  background: #ffffff; /* Making it a card-like appearance */
-  padding: 2rem; /* Providing padding to the card */
-  border-radius: 8px; /* Rounded corners for card */
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
+  max-width: 22.5rem;
+  margin: 1.25rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.15);
 
-  /* Flex styling remains the same */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  .register-form {
-    width: 100%; /* Take full width of its parent container */
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* consistent gap between elements without using margin on each element */
+}
 
-    button {
-      align-self: flex-end; /* Align the button to the right end */
-    }
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  button {
+    align-self: stretch;
+    margin-top: 0.625rem;
   }
+}
+
+.alert-success {
+  background-color: #e5ffe5;
+  color: #2a8a2a;
+}
+
+.alert-error {
+  background-color: #ffe5e5;
+  color: #8a2a2a;
 }

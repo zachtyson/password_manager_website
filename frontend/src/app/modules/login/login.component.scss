@@ -4,18 +4,16 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f5f5f5;
 }
 
 .login-container {
   width: 100%;
-  max-width: 400px;
-  margin: 20px; /* A slight margin */
+  max-width: 22.5rem;
+  margin: 1.25rem;
   background: #ffffff;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.15);
 
   display: flex;
   flex-direction: column;
@@ -26,8 +24,6 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    align-items: center;
-    gap: 16px;
   }
 }
 
@@ -35,20 +31,21 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Increased the gap slightly */
+  gap: 1.25rem;
 
   button {
-    align-self: flex-end;
+    align-self: stretch;
+    margin-top: 0.625rem;
   }
 }
 
 .alert {
   width: 100%;
-  max-width: 400px;
+  max-width: 25rem;
   text-align: center;
-  padding: 10px;
-  border-radius: 8px;
-  margin: 10px 0;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  margin: 0.625rem 0;
 }
 
 .alert-success {
