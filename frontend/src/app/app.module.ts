@@ -15,6 +15,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './modules/login/login.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -23,19 +24,20 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
     LoginComponent,
     DashboardComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        MatInputModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        MatToolbarModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatIconModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
