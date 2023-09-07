@@ -6,9 +6,17 @@ body {
   margin: 0;
 }
 
+.main-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
 .login-container {
   width: 100%;
-  max-width: 22.5rem;
+  max-width: 25rem;
   margin: 1.25rem;
   background: #ffffff;
   padding: 2rem;
