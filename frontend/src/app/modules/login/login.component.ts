@@ -77,6 +77,10 @@ export class LoginComponent {
       this.isSubmittedSuccessfully = true;
       response = JSON.parse(JSON.stringify(response));
       localStorage.setItem('access_token', `Bearer ${response.access_token}`);
+      //if user is logged in, redirect to home page after 1 second
+      setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 1000);
     }, error => {
       this.isSubmittedSuccessfully = false;
       this.isSubmitted = true;
