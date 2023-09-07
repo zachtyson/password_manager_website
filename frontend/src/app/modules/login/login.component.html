@@ -1,21 +1,21 @@
 <div *ngIf="!isSubmittedSuccessfully && !isSubmitted" class="login-container">
   <h2>Login</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
 
-    <!-- Username/Email Toggle -->
-    <button mat-button (click)="toggleEmailLogin()">{{ isEmailLogin ? 'Use Username' : 'Use Email' }}</button>
-
-    <!-- Username -->
-    <mat-form-field *ngIf="!isEmailLogin" class="form-group">
-      <mat-label>Username</mat-label>
-      <input matInput type="text" formControlName="username">
-    </mat-form-field>
-
-    <!-- Email -->
-    <mat-form-field *ngIf="isEmailLogin" class="form-group">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email">
-    </mat-form-field>
+    <!-- Username/Email Toggle and Associated Input -->
+    <div class="toggle-container">
+      <button mat-button (click)="toggleEmailLogin()">{{ isEmailLogin ? 'Use Username' : 'Use Email' }}</button>
+      <!-- Username -->
+      <mat-form-field *ngIf="!isEmailLogin" class="form-group">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName="username">
+      </mat-form-field>
+      <!-- Email -->
+      <mat-form-field *ngIf="isEmailLogin" class="form-group">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+      </mat-form-field>
+    </div>
 
     <!-- Password -->
     <mat-form-field class="form-group">
@@ -26,9 +26,11 @@
     <button mat-raised-button type="submit" [disabled]="!loginForm.valid" color="primary">Login</button>
   </form>
 </div>
+
 <div *ngIf="isSubmittedSuccessfully && isSubmitted" class="alert alert-success">
   Submitted successfully!
 </div>
-<div *ngIf="!isSubmittedSuccessfully && isSubmitted">
+
+<div *ngIf="!isSubmittedSuccessfully && isSubmitted" class="alert alert-error">
   Something went wrong!
 </div>

@@ -1,4 +1,3 @@
-/* Ensure body or main container has this style to center the register-container */
 body {
   display: flex;
   justify-content: center;
@@ -6,31 +5,58 @@ body {
   height: 100vh;
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  background-color: #f5f5f5; /* a light background to contrast the white card */
+  background-color: #f5f5f5;
 }
 
 .login-container {
   width: 100%;
-  max-width: 400px; /* To ensure the form does not take the full width on larger screens */
-  background: #ffffff; /* Making it a card-like appearance */
-  padding: 2rem; /* Providing padding to the card */
-  border-radius: 8px; /* Rounded corners for card */
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
+  max-width: 400px;
+  margin: 20px; /* A slight margin */
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
 
-  /* Flex styling remains the same */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  .login-form {
-    width: 100%; /* Take full width of its parent container */
+  .toggle-container {
     display: flex;
     flex-direction: column;
-    gap: 16px; /* consistent gap between elements without using margin on each element */
-
-    button {
-      align-self: flex-end; /* Align the button to the right end */
-    }
+    width: 100%;
+    align-items: center;
+    gap: 16px;
   }
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Increased the gap slightly */
+
+  button {
+    align-self: flex-end;
+  }
+}
+
+.alert {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.alert-success {
+  background-color: #e5ffe5;
+  color: #2a8a2a;
+}
+
+.alert-error {
+  background-color: #ffe5e5;
+  color: #8a2a2a;
 }
