@@ -16,13 +16,15 @@ import { LoginComponent } from './modules/login/login.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import {MatIconModule} from "@angular/material/icon";
+import { SidebarComponent } from './modules/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    DashboardComponent
+    DashboardComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
