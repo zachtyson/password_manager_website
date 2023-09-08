@@ -17,6 +17,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import {MatIconModule} from "@angular/material/icon";
 import { SidebarComponent } from './modules/sidebar/sidebar.component';
+import { CredentialCardComponent } from './modules/credentialcard/credential-card.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { SidebarComponent } from './modules/sidebar/sidebar.component';
     RegisterComponent,
     LoginComponent,
     DashboardComponent,
-    SidebarComponent
+    SidebarComponent,
+    CredentialCardComponent
   ],
   imports: [
     BrowserModule,
