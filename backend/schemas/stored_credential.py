@@ -23,6 +23,7 @@ class CredInDB(CredBase):
     owner_id: int
     username: Optional[str] = None
     email: Optional[str] = None
+    url: Optional[str] = None
     encrypted_password: str
     added_date: datetime
     last_accessed_date: datetime
@@ -38,6 +39,7 @@ class CredInDBShared(CredBase):
     owner_id: int
     username: Optional[str] = None
     email: Optional[str] = None
+    url: Optional[str] = None
     encrypted_password: str
     added_date: datetime
     last_accessed_date: datetime
@@ -52,6 +54,7 @@ class CredUpdate(CredBase):
     username: Optional[str] = None
     email: Optional[str] = None
     password: Optional[str] = None
+    url: Optional[str] = None
 
 
 # Used for returning credential information. Does not include email,
@@ -62,6 +65,7 @@ class CredResponse(CredBase):
     added_date: datetime
     last_accessed_date: datetime
     shared_users: List[UserBase]
+    url: Optional[str] = None
 
     class Config:
         orm_mode = True
