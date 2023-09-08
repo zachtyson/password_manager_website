@@ -30,6 +30,7 @@ export class LoginService {
     const token = localStorage.getItem('access_token');
     //todo: check if token is valid and not expired
     //can't do this until an api endpoint is created to check if token is valid
+    //todo: move to auth service
     if(token == null) {
       return false;
     }
