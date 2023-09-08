@@ -13,6 +13,7 @@ class CredBase(BaseModel):
 class CredCreate(CredBase):
     username: Optional[str] = None
     email: Optional[str] = None
+    url: Optional[str] = None
     password: str
 
 
