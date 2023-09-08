@@ -4,6 +4,8 @@
     <button mat-button routerLink="/passwords" routerLinkActive="active-link">Passwords</button>
     <button mat-button routerLink="/settings" routerLinkActive="active-link">Settings</button>
     <button mat-button routerLink="/about" routerLinkActive="active-link">About</button>
+    <div class="spacer"></div> <!-- Add a spacer for alignment -->
+    <button mat-button [routerLink]="rightButton" routerLinkActive="active-link" class="align-right">{{rightButtonText}}</button>
   </mat-toolbar>
   <router-outlet></router-outlet>
 </div>
