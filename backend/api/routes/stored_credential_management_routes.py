@@ -45,7 +45,7 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     # create new credential with user's id as owner
     db_cred = StoredCredential(owner_id=user.id, nickname=stored_credential.nickname,
                                username=stored_credential.username, email=stored_credential.email,
-                               encrypted_password=stored_credential.password)
+                               encrypted_password=stored_credential.password, url=stored_credential.url)
     # add credential to database
     db.add(db_cred)
     db.commit()
