@@ -11,8 +11,8 @@ class CredBase(BaseModel):
 
 # Used for creating a new stored credential
 class CredCreate(CredBase):
-    username: str
-    email: str
+    username: Optional[str] = None
+    email: Optional[str] = None
     password: str
 
 
