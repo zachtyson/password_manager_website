@@ -11,7 +11,7 @@ export class AppComponent {
   rightButtonText = 'Login';
   ngOnInit() {
     if(localStorage.getItem('access_token')) {
-      this.rightButton = '/sign-out';
+      this.rightButton = '/signout';
       this.rightButtonText = 'Sign Out';
     } else {
       this.rightButton = '/login';
