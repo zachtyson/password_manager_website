@@ -18,6 +18,7 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import {MatIconModule} from "@angular/material/icon";
 import { SidebarComponent } from './modules/sidebar/sidebar.component';
 import { CredentialCardComponent } from './modules/credentialcard/credential-card.component';
+import { SignoutComponent } from './modules/signout/signout.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CredentialCardComponent } from './modules/credentialcard/credential-car
     LoginComponent,
     DashboardComponent,
     SidebarComponent,
-    CredentialCardComponent
+    CredentialCardComponent,
+    SignoutComponent
   ],
   imports: [
     BrowserModule,
