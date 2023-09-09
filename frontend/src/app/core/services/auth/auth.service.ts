@@ -6,4 +6,9 @@ import { Injectable } from '@angular/core';
 export class AuthService {
 
   constructor() { }
+
+  // Clear all items from local storage
+  clearLocalStorage() {
+    localStorage.clear();
+  }
 }
