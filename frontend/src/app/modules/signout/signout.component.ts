@@ -14,8 +14,10 @@ export class SignoutComponent {
     this.successfulClearLocalStorage = this.authService.clearLocalStorage();
   }
   ngAfterViewInit() {
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 500);
+    if(this.successfulClearLocalStorage) {
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
+    }
   }
 }
