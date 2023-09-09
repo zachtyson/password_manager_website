@@ -7,8 +7,13 @@ export class AuthService {
 
   constructor() { }
 
-  // Clear all items from local storage
-  clearLocalStorage() {
-    localStorage.clear();
+  clearLocalStorage(): boolean {
+    try {
+      localStorage.clear();
+      return Object.keys(localStorage).length === 0;
+    } catch (error) {
+      console.error('Failed to clear local storage:', error);
+      return false;
+    }
   }
 }
