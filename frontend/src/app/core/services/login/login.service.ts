@@ -10,7 +10,7 @@ export class LoginService {
   private API_URL = 'http://localhost:8000';
   constructor(private http:HttpClient, private authService:AuthService) { }
 
-  loginUser(user: User){
+  verifyUserLoginInfo(user: User){
     const formData: FormData = new FormData();
     let loginUrl = this.API_URL+"/login";
     if (user.username && user.password) {

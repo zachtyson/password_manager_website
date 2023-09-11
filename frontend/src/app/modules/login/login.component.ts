@@ -72,7 +72,7 @@ export class LoginComponent {
       newUser.username = formValues.username;
     }
 
-    this.loginService.loginUser(newUser).subscribe(response => {
+    this.loginService.verifyUserLoginInfo(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
       response = JSON.parse(JSON.stringify(response));
