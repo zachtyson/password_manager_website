@@ -25,7 +25,6 @@ export class DashboardComponent {
     if(token != null) {
       this.credentialsService.getCredentials(token).subscribe((data: Credential[]) => {
         this.savedCredentials = data;
-        console.log(this.savedCredentials);
         for(let i = 0; i < this.savedCredentials.length; i++) {
           this.stringifiedCredentials.push(JSON.stringify(this.savedCredentials[i]));
         }
