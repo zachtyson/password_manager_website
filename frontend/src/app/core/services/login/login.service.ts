@@ -27,6 +27,11 @@ export class LoginService {
     return this.http.post<any>(loginUrl,formData)
   }
 
+  logInUser(response: any) {
+    response = JSON.parse(JSON.stringify(response));
+    localStorage.setItem('access_token', `Bearer ${response.access_token}`);
+  }
+
   checkIfUserIsLoggedIn():boolean{
     const token = this.authService.getJwtToken();
     //todo: check if token is valid and not expired

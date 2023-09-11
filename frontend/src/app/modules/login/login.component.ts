@@ -75,8 +75,7 @@ export class LoginComponent {
     this.loginService.verifyUserLoginInfo(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
-      response = JSON.parse(JSON.stringify(response));
-      localStorage.setItem('access_token', `Bearer ${response.access_token}`);
+      this.loginService.logInUser(response);
       //if user is logged in, redirect to home page after 1 second
       setTimeout(() => {
         this.router.navigate(['/dashboard']);
