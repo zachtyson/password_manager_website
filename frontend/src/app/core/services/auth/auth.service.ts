@@ -17,7 +17,22 @@ export class AuthService {
     }
   }
 
-  decodeJwtToken(token: string): any {
+  checkTokenExpiry(): boolean {
+    const token = localStorage.getItem('access_token');
+    if(token == null) {
+      return false;
+    }
+    const payload = this.decodeJwtToken();
+    if (!payload || !payload.exp) {
+      return false;
+    }
+    return (Math.floor((new Date).getTime() / 1000)) >= payload.exp;
+  }
+  decodeJwtToken(): any {
+    const token = localStorage.getItem('access_token');
+    if(token == null) {
+      return null;
+    }
     try {
       const payloadPart = token.split('.')[1];
       const payloadString = atob(payloadPart);
