@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {CredentialsService} from "../../core/services/credentials/credentials.service";
 import {Credential} from "../../core/models/saved-credential.model";
+import {AuthService} from "../../core/services/auth/auth.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -12,7 +13,7 @@ import {Credential} from "../../core/models/saved-credential.model";
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
-  constructor(private loginService: LoginService, private securityService: SecurityService,private router: Router, private credentialsService: CredentialsService) {
+  constructor(private loginService: LoginService, private securityService: SecurityService,private router: Router, private credentialsService: CredentialsService, private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -20,7 +21,7 @@ export class DashboardComponent {
       //if user is not logged in, redirect to login page
       this.router.navigate(['/login']);
     }
-    const token = localStorage.getItem('access_token');
+    const token = this.authService.getJwtToken();
     if(token != null) {
       this.credentialsService.getCredentials(token).subscribe((data: Credential[]) => {
         this.savedCredentials = data;
