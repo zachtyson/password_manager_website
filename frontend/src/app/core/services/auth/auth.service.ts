@@ -18,7 +18,7 @@ export class AuthService {
   }
 
   checkTokenExpiry(): boolean {
-    const token = localStorage.getItem('access_token');
+    const token = this.getJwtToken();
     if(token == null) {
       return false;
     }
@@ -29,7 +29,7 @@ export class AuthService {
     return (Math.floor((new Date).getTime() / 1000)) >= payload.exp;
   }
   decodeJwtToken(): any {
-    const token = localStorage.getItem('access_token');
+    const token = this.getJwtToken();
     if(token == null) {
       return null;
     }
@@ -41,5 +41,13 @@ export class AuthService {
       console.error('Failed to decode JWT:', error);
       return null;
     }
+  }
+
+  getJwtToken(): string|null {
+    const token = localStorage.getItem('access_token');
+    if(token == null) {
+      return null;
+    }
+    return token;
   }
 }
