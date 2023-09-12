@@ -21,6 +21,7 @@ import { CredentialCardComponent } from './modules/credentialcard/credential-car
 import { SignoutComponent } from './modules/signout/signout.component';
 import { CreateCredentialComponent } from './modules/createcredential/createcredential.component';
 import { MasterPasswordDialogComponent } from './modules/master-password-dialog/master-password-dialog.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { MasterPasswordDialogComponent } from './modules/master-password-dialog/
     ReactiveFormsModule,
     MatToolbarModule,
     MatIconModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
