@@ -5,7 +5,7 @@ from models.user import StoredCredential, User
 from db.session import SessionLocal
 from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared
 from typing import Annotated, List
-from core.security import oauth2_scheme, secret_key, algorithm, TokenData
+from core.security import oauth2_scheme, secret_key, algorithm, TokenData, generate_salt
 from jose import JWTError, jwt
 
 router = APIRouter()
@@ -42,10 +42,12 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     # realistically)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    salt = generate_salt()
+    # generate salt for password encryption
     # create new credential with user's id as owner
     db_cred = StoredCredential(owner_id=user.id, nickname=stored_credential.nickname,
                                username=stored_credential.username, email=stored_credential.email,
-                               encrypted_password=stored_credential.password, url=stored_credential.url)
+                               encrypted_password=stored_credential.password, url=stored_credential.url, salt=salt)
     # add credential to database
     db.add(db_cred)
     db.commit()
