@@ -15,8 +15,8 @@ export class AppComponent {
     this.updateRightButton();
     if(this.authService.checkTokenExpiry()) {
       this.authService.clearLocalStorage();
+      this.router.navigate(['/login']);
     }
-    this.router.navigate(['/']);
   }
 
 
