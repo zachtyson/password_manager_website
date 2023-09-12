@@ -5,10 +5,11 @@ export interface Credential {
   owner_id?: number;
   nickname?: string;
   username?: string;
-  encrypted_password?: string;
+  password?: string;
   email?: string;
   added_date?: Date;
   last_accessed_date?: Date;
   url?: string;
   shared_users?: User[];
+  salt?: string;
 }
