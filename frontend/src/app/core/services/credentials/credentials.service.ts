@@ -30,4 +30,13 @@ export class CredentialsService {
     const options = { headers: headers };
     return this.http.get<string>(this.API_URL + path, options);
   }
+
+  createCredential(access_token: string, credential: Credential): Observable<Credential> {
+    const path = '/stored_credentials/add';
+    const headers = new HttpHeaders({
+      'Authorization': access_token,
+    });
+    const options = { headers: headers };
+    return this.http.post<Credential>(this.API_URL + path, credential, options);
+  }
 }
