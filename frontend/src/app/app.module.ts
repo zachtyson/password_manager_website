@@ -20,6 +20,7 @@ import { SidebarComponent } from './modules/sidebar/sidebar.component';
 import { CredentialCardComponent } from './modules/credentialcard/credential-card.component';
 import { SignoutComponent } from './modules/signout/signout.component';
 import { CreateCredentialComponent } from './modules/createcredential/createcredential.component';
+import { MasterPasswordDialogComponent } from './modules/master-password-dialog/master-password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CreateCredentialComponent } from './modules/createcredential/createcred
     SidebarComponent,
     CredentialCardComponent,
     SignoutComponent,
-    CreateCredentialComponent
+    CreateCredentialComponent,
+    MasterPasswordDialogComponent
   ],
   imports: [
     BrowserModule,
