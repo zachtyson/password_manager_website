@@ -6,6 +6,7 @@ import {SecurityService} from "../../core/services/security/security.service";
 import {Router} from "@angular/router";
 import {LoginService} from "../../core/services/login/login.service";
 import {AuthService} from "../../core/services/auth/auth.service";
+import {CredentialsService} from "../../core/services/credentials/credentials.service";
 
 @Component({
   selector: 'app-createcredential',
@@ -32,7 +33,7 @@ export class CreateCredentialComponent {
     url: new FormControl(''),
   });
 
-  constructor(private securityService: SecurityService, private router: Router, private loginService: LoginService, private authService: AuthService) {}
+  constructor(private securityService: SecurityService, private router: Router, private loginService: LoginService, private authService: AuthService, private credentialsService: CredentialsService) {}
   ngOnInit() {
     if(!this.loginService.checkIfUserIsLoggedIn()) {
       //if user is logged in, redirect to home page
@@ -51,8 +52,10 @@ export class CreateCredentialComponent {
       return;
     }
     const access_token = this.authService.getJwtToken();
-
-
+    if(access_token == null) {
+      return;
+    }
+    const salt = await this.
   }
 
   onEnterKey(event: KeyboardEvent) {
