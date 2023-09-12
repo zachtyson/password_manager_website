@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreatecredentialComponent } from './createcredential.component';
+import { CreateCredentialComponent } from './createcredential.component';
 
-describe('CreatecredentialComponent', () => {
-  let component: CreatecredentialComponent;
-  let fixture: ComponentFixture<CreatecredentialComponent>;
+describe('CreateCredentialComponent', () => {
+  let component: CreateCredentialComponent;
+  let fixture: ComponentFixture<CreateCredentialComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CreatecredentialComponent]
+      declarations: [CreateCredentialComponent]
     });
-    fixture = TestBed.createComponent(CreatecredentialComponent);
+    fixture = TestBed.createComponent(CreateCredentialComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
