@@ -28,6 +28,7 @@ class CredInDB(CredBase):
     added_date: datetime
     last_accessed_date: datetime
     shared_users: List[UserBase]
+    salt: Optional[str] = None
 
     class Config:
         orm_mode = True

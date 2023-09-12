@@ -37,4 +37,5 @@ class StoredCredential(Base):
     last_accessed_date = Column(DateTime, default=func.now(), nullable=False)
     shared_users = relationship('User', secondary=users_stored_credentials, backref='credential')
     url = Column(String(255), nullable=True)
+    salt = Column(String(100), nullable=True)
 
