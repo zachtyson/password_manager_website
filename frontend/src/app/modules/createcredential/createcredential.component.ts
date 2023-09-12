@@ -21,7 +21,6 @@ export class CreateCredentialComponent {
     added_date: undefined,
     url: undefined,
   }
-  isEmailLogin: boolean = false;
   isSubmittedSuccessfully: boolean = false;
   isSubmitted: boolean = false;
   credentialForm = new FormGroup({
