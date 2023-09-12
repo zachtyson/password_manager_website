@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
+import {AuthService} from "./core/services/auth/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -12,10 +13,14 @@ export class AppComponent {
   rightButtonText = 'Login';
   ngOnInit() {
     this.updateRightButton();
+    if(this.authService.checkTokenExpiry()) {
+      this.authService.clearLocalStorage();
+      this.router.navigate(['/login']);
+    }
   }
 
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     // Subscribe to the NavigationEnd event
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
