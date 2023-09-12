@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'app-master-password-dialog',
   templateUrl: './master-password-dialog.component.html',
+  styleUrls: ['./master-password-dialog.component.scss'],
 })
 export class MasterPasswordDialogComponent {
   constructor(

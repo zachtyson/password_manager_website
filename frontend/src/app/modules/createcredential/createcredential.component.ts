@@ -56,7 +56,6 @@ export class CreateCredentialComponent {
     }
     let salt: string = '';
     const dialogRef = this.dialog.open(MasterPasswordDialogComponent, {
-      width: '250px',
       data: { masterPassword: '' }
     });
     let masterPassword: string = '';
