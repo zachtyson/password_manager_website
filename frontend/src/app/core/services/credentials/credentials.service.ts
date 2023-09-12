@@ -21,4 +21,13 @@ export class CredentialsService {
     const options = { headers: headers };
     return this.http.get<Credential[]>(this.API_URL + path, options);
   }
+
+  getSalt(access_token: string): Observable<string> {
+    const path = '/stored_credentials/get_salt';
+    const headers = new HttpHeaders({
+      'Authorization': access_token,
+    });
+    const options = { headers: headers };
+    return this.http.get<string>(this.API_URL + path, options);
+  }
 }
