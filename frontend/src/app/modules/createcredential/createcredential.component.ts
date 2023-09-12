@@ -38,11 +38,6 @@ export class CreateCredentialComponent {
     }
     this.credentialForm.valueChanges.subscribe(() => {
     });
-    const p = "b"
-    const masterPassword = "a";
-    const salt = "c";
-    const decryptedPassword = decrypt(p, masterPassword, salt);
-    console.log(decryptedPassword);
   }
   async onSubmit() {
     if (this.credentialForm.invalid) {
@@ -60,39 +55,34 @@ export class CreateCredentialComponent {
       return;
     }
     let salt: string = '';
-    // const dialogRef = this.dialog.open(MasterPasswordDialogComponent, {
-    //   width: '250px',
-    //   data: { masterPassword: '' }
-    // });
-    let masterPassword: string = '';
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     // masterPassword = result;
-    //     //
-    //   } else {
-    //     console.log('You must enter the master password to continue.');
-    //   }
-    // });
-    masterPassword = "password";
-    this.credentialsService.getSalt(access_token).subscribe(response => {
-      salt = response;
-      const encryptedPassword = encrypt(p, masterPassword, salt);
-      let newCredential: Credential = {
-        password: encryptedPassword,
-        username: formValues.username || undefined,
-        email: formValues.email || undefined,
-        nickname: formValues.nickname || undefined,
-        url: formValues.url || undefined,
-        salt: salt,
-      }
-      this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
-        this.isSubmittedSuccessfully = true;
-        this.isSubmitted = true;
-      });
-      console.log(newCredential);
+    const dialogRef = this.dialog.open(MasterPasswordDialogComponent, {
+      width: '250px',
+      data: { masterPassword: '' }
     });
-
-
+    let masterPassword: string = '';
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        masterPassword = result;
+        this.credentialsService.getSalt(access_token).subscribe(response => {
+          salt = response;
+          const encryptedPassword = this.credentialsService.encrypt(p, masterPassword, salt);
+          let newCredential: Credential = {
+            password: encryptedPassword,
+            username: formValues.username || undefined,
+            email: formValues.email || undefined,
+            nickname: formValues.nickname || undefined,
+            url: formValues.url || undefined,
+            salt: salt,
+          }
+          this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
+            this.isSubmittedSuccessfully = true;
+            this.isSubmitted = true;
+          });
+        });
+      } else {
+        console.log('You must enter the master password to continue.');
+      }
+    });
   }
 
   onEnterKey(event: KeyboardEvent) {
@@ -105,21 +95,4 @@ export class CreateCredentialComponent {
     }
   }
 
-}
-function deriveKey(masterPassword: string, salt: string): string {
-  return CryptoJS.PBKDF2(masterPassword, salt, { keySize: 256/32, iterations: 1000 }).toString();
-}
-function encrypt(p: string, masterPassword: string, salt: string) {
-  const derivedKey = deriveKey(masterPassword, salt);
-  const iv = CryptoJS.lib.WordArray.random(128/8);
-  const ciphertext = CryptoJS.AES.encrypt(p, derivedKey, { iv: iv }).toString();
-  const hash = CryptoJS.SHA256(derivedKey).toString();
-  return iv.toString() + ":" + ciphertext;
-}
-
-function decrypt(p: string, masterPassword: string, salt: string) {
-  const [ivStr, ciphertext] = p.split(':');
-  const derivedKey = deriveKey(masterPassword, salt);
-  const originalText = CryptoJS.AES.decrypt(ciphertext, derivedKey, { iv: CryptoJS.enc.Hex.parse(ivStr) }).toString(CryptoJS.enc.Utf8);
-  return originalText;
 }
