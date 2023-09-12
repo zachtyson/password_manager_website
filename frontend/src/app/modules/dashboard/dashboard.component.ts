@@ -13,7 +13,9 @@ import {AuthService} from "../../core/services/auth/auth.service";
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
-  constructor(private loginService: LoginService, private securityService: SecurityService,private router: Router, private credentialsService: CredentialsService, private authService: AuthService) {
+  constructor(private loginService: LoginService, private securityService: SecurityService,
+              private router: Router, private credentialsService: CredentialsService,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
