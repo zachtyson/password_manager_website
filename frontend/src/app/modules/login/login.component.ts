@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {User} from "../../core/models/user.model";
 import {SecurityService} from "../../core/services/security/security.service";
@@ -84,6 +84,16 @@ export class LoginComponent {
       this.isSubmittedSuccessfully = false;
       this.isSubmitted = true;
     });
+  }
+
+  onEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const loginButton = document.querySelector('[mat-raised-button]');
+      if (loginButton) {
+        (loginButton as HTMLButtonElement).click();
+      }
+    }
   }
 
 }
