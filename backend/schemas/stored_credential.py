@@ -15,6 +15,7 @@ class CredCreate(CredBase):
     email: Optional[str] = None
     url: Optional[str] = None
     password: str
+    salt: str
 
 
 # Used for getting all information on a credential

@@ -18,6 +18,30 @@ def get_db():
     finally:
         db.close()
 
+@router.get("/stored_credentials/get_salt", response_model=str)
+async def get_salt(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.username == token_data.username).first()
+    # makes sure user is real (we use the username in the jwt to find them so this should never actually be raised
+    # realistically)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    salt = generate_salt()
+    return salt
+
+
 
 # adds a new stored credential to the database associated with the user's account
 @router.post("/stored_credentials/add", response_model=CredResponse)
