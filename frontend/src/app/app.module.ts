@@ -19,7 +19,7 @@ import {MatIconModule} from "@angular/material/icon";
 import { SidebarComponent } from './modules/sidebar/sidebar.component';
 import { CredentialCardComponent } from './modules/credentialcard/credential-card.component';
 import { SignoutComponent } from './modules/signout/signout.component';
-import { CreatecredentialComponent } from './modules/createcredential/createcredential.component';
+import { CreateCredentialComponent } from './modules/createcredential/createcredential.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import { CreatecredentialComponent } from './modules/createcredential/createcred
     SidebarComponent,
     CredentialCardComponent,
     SignoutComponent,
-    CreatecredentialComponent
+    CreateCredentialComponent
   ],
   imports: [
     BrowserModule,
