@@ -12,4 +12,5 @@ export interface Credential {
   url?: string;
   shared_users?: User[];
   salt?: string;
+  encrypted_password?: string;
 }
