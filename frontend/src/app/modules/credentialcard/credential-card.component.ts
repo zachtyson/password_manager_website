@@ -9,8 +9,15 @@ import {Credential} from "../../core/models/saved-credential.model";
 export class CredentialCardComponent {
   @Input() data?: Credential;
 
+  showPassword = false;
+
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.data);
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }
