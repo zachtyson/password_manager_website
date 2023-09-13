@@ -76,10 +76,13 @@ export class CreateCredentialComponent {
           this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
             this.isSubmittedSuccessfully = true;
             this.isSubmitted = true;
+            setTimeout(() => {
+              this.router.navigate(['/dashboard']);
+            }, 500);
           });
         });
       } else {
-        console.log('You must enter the master password to continue.');
+        return;
       }
     });
   }
