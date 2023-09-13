@@ -8,14 +8,19 @@ mat-toolbar {
   position: sticky;
   top: 0;
   z-index: 5;
-  overflow:hidden;
-
+  overflow: hidden;
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Align items to the start and end */
 }
 
 button {
   margin-right: 1em;
 }
 
-button:last-child {
-  margin-right: 0;
+.align-right {
+  margin-right: 0; /* Remove margin from the right of the right-aligned button */
+}
+
+.spacer {
+  flex-grow: 1; /* Pushes the right-aligned button to the right */
 }

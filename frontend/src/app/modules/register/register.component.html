@@ -29,6 +29,8 @@
       </mat-form-field>
 
       <button mat-raised-button type="submit" [disabled]="!registerForm.valid || passwordMismatch" color="primary">Register</button>
+      <button mat-button [routerLink]="['/login']" class="register-button">Login</button>
+
     </form>
 
   </div>

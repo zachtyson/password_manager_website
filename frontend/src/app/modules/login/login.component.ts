@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {User} from "../../core/models/user.model";
 import {SecurityService} from "../../core/services/security/security.service";
@@ -72,15 +72,28 @@ export class LoginComponent {
       newUser.username = formValues.username;
     }
 
-    this.loginService.loginUser(newUser).subscribe(response => {
+    this.loginService.verifyUserLoginInfo(newUser).subscribe(response => {
       this.isSubmitted = true;
       this.isSubmittedSuccessfully = true;
-      response = JSON.parse(JSON.stringify(response));
-      localStorage.setItem('access_token', `Bearer ${response.access_token}`);
+      this.loginService.logInUser(response);
+      //if user is logged in, redirect to home page after 1 second
+      setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 1000);
     }, error => {
       this.isSubmittedSuccessfully = false;
       this.isSubmitted = true;
     });
+  }
+
+  onEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const loginButton = document.querySelector('[mat-raised-button]');
+      if (loginButton) {
+        (loginButton as HTMLButtonElement).click();
+      }
+    }
   }
 
 }

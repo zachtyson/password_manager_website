@@ -1,0 +1,7 @@
+<div class="main-container">
+  <mat-toolbar color="secondary" class="sidebar" [@slideInOut]="isOpen ? 'open' : 'closed'">
+    <button mat-fab color="primary" class="toggle-button" (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon> <!-- You can change the icon as needed -->
+    </button>
+  </mat-toolbar>
+</div>

@@ -1,9 +1,9 @@
 <div class="main-container">
   <div *ngIf="!isSubmittedSuccessfully && !isSubmitted" class="login-container">
     <h2>Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" (keydown)="onEnterKey($event)">
 
-      <!-- Username/Email Toggle and Associated Input -->
+    <!-- Username/Email Toggle and Associated Input -->
       <div class="toggle-container">
         <button mat-button (click)="toggleEmailLogin()">{{ isEmailLogin ? 'Use Username' : 'Use Email' }}</button>
         <!-- Username -->
@@ -17,14 +17,13 @@
           <input matInput type="email" formControlName="email">
         </mat-form-field>
       </div>
-
       <!-- Password -->
       <mat-form-field class="form-group">
         <mat-label>Password</mat-label>
         <input matInput type="password" formControlName="password">
       </mat-form-field>
-
-      <button mat-raised-button type="submit" [disabled]="!loginForm.valid" color="primary">Login</button>
+      <button mat-raised-button type="submit" [disabled]="!loginForm.valid" color="primary" #loginButton>Login</button>
+      <button mat-button [routerLink]="['/register']" class="register-button">Register</button>
     </form>
   </div>
 

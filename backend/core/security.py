@@ -4,6 +4,7 @@ from typing import Union, Any
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import os
 
 access_token_minutes = 60
 secret_key = "secret"
@@ -37,3 +38,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+
+def generate_salt() -> str:
+    return os.urandom(16).hex()

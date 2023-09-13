@@ -1,0 +1,19 @@
+.sidebar {
+  width: 15vw;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: -15vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.toggle-button {
+  align-self: flex-end;
+  margin: -1.625rem;
+}
