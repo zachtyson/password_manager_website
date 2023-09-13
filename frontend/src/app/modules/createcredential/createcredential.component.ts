@@ -97,4 +97,8 @@ export class CreateCredentialComponent {
     }
   }
 
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
 }
