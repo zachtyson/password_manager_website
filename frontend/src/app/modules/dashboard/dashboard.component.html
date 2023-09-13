@@ -1,6 +1,8 @@
 <div class="main-container">
+  <button class="content" mat-raised-button type="submit" color="primary">Add Password</button>
   <div class="content">
     <app-credential-card *ngFor="let credential of savedCredentials" [data]="credential"></app-credential-card>
   </div>
+
   <!-- <app-sidebar></app-sidebar> -->
 </div>

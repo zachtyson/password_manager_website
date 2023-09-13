@@ -1,0 +1,14 @@
+.main-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap; /* Allow the content to wrap to the next row */
+  max-width: 100%; /* Set a maximum width for the content */
+  justify-content: center; /* Optional: Center the items horizontally */
+}
