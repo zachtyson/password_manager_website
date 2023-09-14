@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models.user import StoredCredential, User
 from db.session import SessionLocal
@@ -44,7 +43,7 @@ async def get_salt(token: Annotated[str, Depends(oauth2_scheme)], db: Session = 
 
 
 # adds a new stored credential to the database associated with the user's account
-@router.post("/stored_credentials/add", response_model=CredResponse)
+@router.post("/stored_credentials/add", status_code=201)
 async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_credential: CredCreate,
                          db: Session = Depends(get_db)):
     # jwt authorization
@@ -76,11 +75,10 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     db.add(db_cred)
     db.commit()
     db.refresh(db_cred)
-    return db_cred
 
 
 # shares a user's saved credential with another user
-@router.put("/stored_credentials/share/{username}/{credid}", response_model=CredResponse)
+@router.put("/stored_credentials/share/{username}/{credid}", status_code=200)
 async def share_credential(token: Annotated[str, Depends(oauth2_scheme)],
                            username: str, credid: int, db: Session = Depends(get_db)):
     # jwt authorization
@@ -119,7 +117,7 @@ async def share_credential(token: Annotated[str, Depends(oauth2_scheme)],
 
 
 # unshares a user's saved credential from another user
-@router.put("/stored_credentials/unshare/{username}/{credid}", response_model=CredResponse)
+@router.put("/stored_credentials/unshare/{username}/{credid}", status_code=200)
 async def unshare_credential(token: Annotated[str, Depends(oauth2_scheme)],
                              username: str, credid: int, db: Session = Depends(get_db)):
     # jwt authorization
@@ -222,9 +220,9 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
 
 
 # updates a user's stored credential
-@router.put("/stored_credentials/update/{credid}", response_model=List[CredUpdate])
+@router.put("/stored_credentials/update/{credid}", status_code=200)
 async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_scheme)],
-                                      credid: int, db: Session = Depends(get_db)):
+                                      credid: int, updated_credential: CredUpdate, db: Session = Depends(get_db)):
     # jwt authorization
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -251,7 +249,10 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
     if token_data.username != user.username:
         raise HTTPException(status_code=401, detail="Unauthorized. User making request does not match user request is "
                                                     "for")
-    # retrieve credentials that have been shared with the user
-    shared_credentials = db.query(StoredCredential).join(User, StoredCredential.shared_users).filter(
-        User.username == user.username)
-    return shared_credentials
+    # update credential with updated information
+    setattr(credential, 'nickname', updated_credential.nickname)
+    setattr(credential, 'username', updated_credential.username)
+    setattr(credential, 'email', updated_credential.email)
+    setattr(credential, 'encrypted_password', updated_credential.password)
+    setattr(credential, 'url', updated_credential.url)
+    db.commit()
