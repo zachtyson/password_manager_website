@@ -35,7 +35,9 @@ class StoredCredential(Base):
     encrypted_password = Column(String(100))
     added_date = Column(DateTime, default=func.now(), nullable=False)
     last_accessed_date = Column(DateTime, default=func.now(), nullable=False)
+    last_accessed_user_id = Column(Integer, ForeignKey('users.id'))
     shared_users = relationship('User', secondary=users_stored_credentials, backref='credential')
+    folder = Column(String(100), nullable=True)
     url = Column(String(255), nullable=True)
     salt = Column(String(100), nullable=True)
 

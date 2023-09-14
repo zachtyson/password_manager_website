@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from models.user import StoredCredential, User
 from db.session import SessionLocal
@@ -70,7 +71,7 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     db_cred = StoredCredential(owner_id=user.id, nickname=stored_credential.nickname,
                                username=stored_credential.username, email=stored_credential.email,
                                encrypted_password=stored_credential.password, url=stored_credential.url,
-                               salt=stored_credential.salt)
+                               salt=stored_credential.salt, last_accessed_user_id=user.id)
     # add credential to database
     db.add(db_cred)
     db.commit()
@@ -255,4 +256,36 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
     setattr(credential, 'email', updated_credential.email)
     setattr(credential, 'encrypted_password', updated_credential.password)
     setattr(credential, 'url', updated_credential.url)
+    db.commit()
+
+
+# updates the last accessed date and user for a credential
+@router.put("/stored_credentials/access/{credid}", status_code=200)
+async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_scheme)],
+                                      credid: int, db: Session = Depends(get_db)):
+    # jwt authorization
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
+    # check if credential actually exists (this realistically should never be false)
+    if not credential:
+        raise HTTPException(status_code=404, detail="Credential not found")
+    # check if the user actually exists (this realistically should never be false)
+    user = db.query(User).filter(User.username == token_data.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Username of caller not found")
+    # update credential with updated access information
+    setattr(credential, 'last_accessed_date', func.now())
+    setattr(credential, 'last_accessed_user_id', user.id)
     db.commit()

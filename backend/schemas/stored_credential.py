@@ -28,6 +28,8 @@ class CredInDB(CredBase):
     encrypted_password: str
     added_date: datetime
     last_accessed_date: datetime
+    last_accessed_user_id: int
+    folder: str
     shared_users: List[UserBase]
     salt: Optional[str] = None
 
@@ -35,7 +37,7 @@ class CredInDB(CredBase):
         orm_mode = True
 
 
-# Used for getting all information on a credential except the list of users shared with
+# Used for getting all information on a credential except the list of users shared with and folder
 class CredInDBShared(CredBase):
     id: int
     owner_id: int
@@ -45,6 +47,7 @@ class CredInDBShared(CredBase):
     encrypted_password: str
     added_date: datetime
     last_accessed_date: datetime
+    last_accessed_user_id: int
 
     class Config:
         orm_mode = True
@@ -66,6 +69,8 @@ class CredResponse(CredBase):
     owner_id: int
     added_date: datetime
     last_accessed_date: datetime
+    last_accessed_user_id: int
+    folder: str
     shared_users: List[UserBase]
     url: Optional[str] = None
 
