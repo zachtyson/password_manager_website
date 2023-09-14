@@ -1,0 +1,11 @@
+<div class="main-container">
+  <div *ngIf="successfulClearLocalStorage == null" class="signout-container alert">
+    Attempting to sign out...
+  </div>
+  <div *ngIf="successfulClearLocalStorage == true" class="signout-container alert alert-success">
+    Successfully signed out.
+  </div>
+  <div *ngIf="successfulClearLocalStorage == false" class="signout-container alert alert-error">
+    Failed to sign out.
+  </div>
+</div>

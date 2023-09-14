@@ -5,7 +5,7 @@ from models.user import StoredCredential, User
 from db.session import SessionLocal
 from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared, CredUpdate
 from typing import Annotated, List
-from core.security import oauth2_scheme, secret_key, algorithm, TokenData
+from core.security import oauth2_scheme, secret_key, algorithm, TokenData, generate_salt
 from jose import JWTError, jwt
 
 router = APIRouter()
@@ -17,6 +17,30 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@router.get("/stored_credentials/get_salt", response_model=str)
+async def get_salt(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.username == token_data.username).first()
+    # makes sure user is real (we use the username in the jwt to find them so this should never actually be raised
+    # realistically)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    salt = generate_salt()
+    return salt
 
 
 # adds a new stored credential to the database associated with the user's account
@@ -42,10 +66,12 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     # realistically)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    # generate salt for password encryption
     # create new credential with user's id as owner
     db_cred = StoredCredential(owner_id=user.id, nickname=stored_credential.nickname,
                                username=stored_credential.username, email=stored_credential.email,
-                               encrypted_password=stored_credential.password)
+                               encrypted_password=stored_credential.password, url=stored_credential.url,
+                               salt=stored_credential.salt)
     # add credential to database
     db.add(db_cred)
     db.commit()

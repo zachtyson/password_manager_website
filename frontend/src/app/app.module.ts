@@ -14,26 +14,42 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './modules/login/login.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import {MatIconModule} from "@angular/material/icon";
+import { SidebarComponent } from './modules/sidebar/sidebar.component';
+import { CredentialCardComponent } from './modules/credentialcard/credential-card.component';
+import { SignoutComponent } from './modules/signout/signout.component';
+import { CreateCredentialComponent } from './modules/createcredential/createcredential.component';
+import { MasterPasswordDialogComponent } from './modules/master-password-dialog/master-password-dialog.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    DashboardComponent,
+    SidebarComponent,
+    CredentialCardComponent,
+    SignoutComponent,
+    CreateCredentialComponent,
+    MasterPasswordDialogComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        MatInputModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        MatToolbarModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatDialogModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
