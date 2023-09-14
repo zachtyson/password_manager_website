@@ -27,7 +27,8 @@ export class DashboardComponent {
       debounceTime(300),          // wait for a 300ms pause in typing
       distinctUntilChanged()      // only if the new value is different from the last
     ).subscribe(term => {
-      this.filterCredentials("");
+      this.filterCredentials(term); // pass the term to filterCredentials method
+      console.log(term);
     });
 
     if(!this.loginService.checkIfUserIsLoggedIn()) {
@@ -50,23 +51,18 @@ export class DashboardComponent {
 
   filteredCredentials: Credential[] = [];
 
-  filterCredentials(term:string) {
-
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    let s:string|null;
-    try {
-      s = this.searchTerm.value;
-    }
-    catch (e) {
+  filterCredentials(term:string|null) {
+    if(term == null) {
       return;
     }
-    if(s == null) {
-      return;
+    this.filteredCredentials = [];
+    for(let i = 0; i < this.savedCredentials.length; i++) {
+      if(this.stringifiedCredentials[i].includes(term)) {
+        this.filteredCredentials.push(this.savedCredentials[i]);
+      }
     }
-    this.filterCredentials(s);
   }
+
 
   savedCredentials:Credential[] = [];
   stringifiedCredentials:string[] = [];
