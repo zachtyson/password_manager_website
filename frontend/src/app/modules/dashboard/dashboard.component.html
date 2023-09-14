@@ -1,16 +1,12 @@
 <div class="main-container">
 
   <!-- Material Search Bar -->
-  <mat-form-field appearance="outline" class="search-bar">
-    <mat-label>Search</mat-label>
-    <input matInput placeholder="Search for a credential">
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+  <input matInput [(ngModel)]="searchTerm" placeholder="">
 
   <button class="content" color="primary" mat-raised-button routerLink="/create-credential" routerLinkActive="active-link">Add Password</button>
 
   <div class="content">
-    <app-credential-card *ngFor="let credential of savedCredentials" [data]="credential"></app-credential-card>
+    <app-credential-card *ngFor="let credential of filteredCredentials" [data]="credential"></app-credential-card>
   </div>
 
   <!-- <app-sidebar></app-sidebar> -->
