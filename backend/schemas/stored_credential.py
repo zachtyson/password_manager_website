@@ -22,10 +22,12 @@ class CredInDB(CredBase):
     owner_id: int
     username: Optional[str] = None
     email: Optional[str] = None
+    url: Optional[str] = None
     encrypted_password: str
     added_date: datetime
     last_accessed_date: datetime
     shared_users: List[UserBase]
+    salt: Optional[str] = None
 
     class Config:
         orm_mode = True

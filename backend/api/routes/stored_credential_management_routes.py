@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models.user import StoredCredential, User
 from db.session import SessionLocal
-from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared
+from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared, CredUpdate
 from typing import Annotated, List
 from core.security import oauth2_scheme, secret_key, algorithm, TokenData
 from jose import JWTError, jwt
@@ -189,6 +189,42 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
     user = db.query(User).filter(User.username == token_data.username).first()
     if not user:
         raise HTTPException(status_code=404, detail="Username not found")
+    # retrieve credentials that have been shared with the user
+    shared_credentials = db.query(StoredCredential).join(User, StoredCredential.shared_users).filter(
+        User.username == user.username)
+    return shared_credentials
+
+
+# updates a user's stored credential
+@router.put("/stored_credentials/update/{credid}", response_model=List[CredUpdate])
+async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_scheme)],
+                                      credid: int, db: Session = Depends(get_db)):
+    # jwt authorization
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
+    # check if credential actually exists
+    if not credential:
+        raise HTTPException(status_code=404, detail="Credential not found")
+    # check if the user actually exists
+    user = db.query(User).filter(User.id == credential.owner_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Username of caller not found")
+    # make sure the user calling the api matches the user who owns the credential
+    if token_data.username != user.username:
+        raise HTTPException(status_code=401, detail="Unauthorized. User making request does not match user request is "
+                                                    "for")
     # retrieve credentials that have been shared with the user
     shared_credentials = db.query(StoredCredential).join(User, StoredCredential.shared_users).filter(
         User.username == user.username)
