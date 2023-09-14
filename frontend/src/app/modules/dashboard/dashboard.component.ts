@@ -57,7 +57,8 @@ export class DashboardComponent {
     }
     this.filteredCredentials = [];
     for(let i = 0; i < this.savedCredentials.length; i++) {
-      if(this.stringifiedCredentials[i].includes(term)) {
+      if(this.savedCredentials[i].nickname?.includes(term) || this.savedCredentials[i].username?.includes(term) ||
+        this.savedCredentials[i].email?.includes(term) || this.savedCredentials[i].url?.includes(term)) {
         this.filteredCredentials.push(this.savedCredentials[i]);
       }
     }
