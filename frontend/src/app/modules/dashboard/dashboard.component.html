@@ -1,7 +1,8 @@
 <div class="main-container">
 
   <!-- Material Search Bar -->
-  <input matInput [(ngModel)]="searchTerm" placeholder="">
+  <input matInput [formControl]="searchTerm" placeholder="Search for a credential">
+
 
   <button class="content" color="primary" mat-raised-button routerLink="/create-credential" routerLinkActive="active-link">Add Password</button>
 
