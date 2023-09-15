@@ -59,7 +59,7 @@ export class CredentialsService {
     return originalText;
   }
 
-  importCredentials(access_token: string, file:File): Promise<any> {
+  importCredentials(access_token: string, file:File,masterPassword: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const path = '/stored_credentials/add';
       const headers = new HttpHeaders({
