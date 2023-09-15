@@ -72,6 +72,25 @@ export class CredentialsService {
         complete: (results) => {
           console.log('Parsed Results:', results.data);
           try {
+            // this.credentialsService.getSalt(access_token).subscribe(response => {
+            //   salt = response;
+            //   const encryptedPassword = this.credentialsService.encrypt(p, masterPassword, salt);
+            //   let newCredential: Credential = {
+            //     password: encryptedPassword,
+            //     username: formValues.username || undefined,
+            //     email: formValues.email || undefined,
+            //     nickname: formValues.nickname || undefined,
+            //     url: formValues.url || undefined,
+            //     salt: salt,
+            //   }
+            //   this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
+            //     this.isSubmittedSuccessfully = true;
+            //     this.isSubmitted = true;
+            //     setTimeout(() => {
+            //       this.router.navigate(['/dashboard']);
+            //     }, 500);
+            //   });
+            // });
             //todo: convert this to actually create credentials
             const credentials: Credential[] = results.data as Credential[];
             const observables = [];
