@@ -5,6 +5,7 @@ import {LoginComponent} from "./modules/login/login.component";
 import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {SignoutComponent} from "./modules/signout/signout.component";
 import {CreateCredentialComponent} from "./modules/createcredential/createcredential.component";
+import {ImportPasswordComponent} from "./modules/import-password/import-password.component";
 
 const routes: Routes = [
   {path: 'register',component:RegisterComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'signout',component:SignoutComponent},
   {path: 'logout',redirectTo: '/signout',pathMatch: 'full'},
   {path: 'create-credential',component:CreateCredentialComponent,pathMatch: 'full'},
+  {path: 'import-password',component:ImportPasswordComponent,pathMatch: 'full'},
 ];
 
 @NgModule({
