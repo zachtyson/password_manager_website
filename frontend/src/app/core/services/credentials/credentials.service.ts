@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Credential} from "../../models/saved-credential.model";
-import {User} from "../../models/user.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {forkJoin, Observable} from "rxjs";
+import {forkJoin, Observable, switchMap} from "rxjs";
 import * as CryptoJS from "crypto-js";
 import * as Papa from 'papaparse';
 
@@ -72,35 +71,37 @@ export class CredentialsService {
         complete: (results) => {
           console.log('Parsed Results:', results.data);
           try {
-            // this.credentialsService.getSalt(access_token).subscribe(response => {
-            //   salt = response;
-            //   const encryptedPassword = this.credentialsService.encrypt(p, masterPassword, salt);
-            //   let newCredential: Credential = {
-            //     password: encryptedPassword,
-            //     username: formValues.username || undefined,
-            //     email: formValues.email || undefined,
-            //     nickname: formValues.nickname || undefined,
-            //     url: formValues.url || undefined,
-            //     salt: salt,
-            //   }
-            //   this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
-            //     this.isSubmittedSuccessfully = true;
-            //     this.isSubmitted = true;
-            //     setTimeout(() => {
-            //       this.router.navigate(['/dashboard']);
-            //     }, 500);
-            //   });
-            // });
-            //todo: convert this to actually create credentials
-            const credentials: Credential[] = results.data as Credential[];
-            const observables = [];
-            for(let credential of credentials) {
-              observables.push(this.createCredential(access_token, credential));
-            }
+            const credentials: any[] = results.data as any[];
+            const observables = credentials.map((credential) => {
+              return this.getSalt(access_token).pipe(
+                switchMap((salt) => {
+                  let nickname: string = credential.name || '';
+                  let username: string = credential.username || '';
+                  let password: string = credential.password || '';
+                  let email: string = credential.email || '';
+                  let url: string = credential.url || '';
+
+                  const encryptedPassword = this.encrypt(password, masterPassword, salt);
+                  if (encryptedPassword == null) {
+                    console.error('Error encrypting password.');
+                    throw new Error('Error encrypting password.');
+                  }
+
+                  let newCredential: Credential = {
+                    password: encryptedPassword,
+                    username: username || undefined,
+                    email: email || undefined,
+                    nickname: nickname || undefined,
+                    url: url || undefined,
+                    salt: salt,
+                  };
+                  return this.createCredential(access_token, newCredential);
+                })
+              );
+            });
 
             forkJoin(observables).subscribe(
               (results) => {
-                console.log('All credentials created:', results);
                 resolve(results);  // resolve the promise with results
               },
               (error) => {
@@ -109,8 +110,8 @@ export class CredentialsService {
               }
             );
           } catch (e) {
-            console.error('Error parsing CSV:', e);
-            reject(e);  // reject the promise with the parsing error
+            console.error('Error processing credentials:', e);
+            reject(e);  // reject the promise with the error
           }
         },
         error: (error) => {
