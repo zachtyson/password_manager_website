@@ -13,7 +13,11 @@ export class ImportPasswordComponent {
   }
   onFileSelected(event: Event) {
     const fileInput = event.target as HTMLInputElement;
-
+    const fileName = fileInput.name.toLowerCase();
+    if (!fileName.endsWith('.csv')) {
+      console.error('Selected file is not a CSV.');
+      return;
+    }
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
       console.log('File selected:', file.name);
@@ -23,7 +27,7 @@ export class ImportPasswordComponent {
 
       reader.onload = () => {
         const csvContent = reader.result as string;
-        console.log(csvContent);
+
         // Process and parse the CSV content here
       };
 
