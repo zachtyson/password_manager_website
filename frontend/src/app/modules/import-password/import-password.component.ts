@@ -13,27 +13,18 @@ export class ImportPasswordComponent {
   }
   onFileSelected(event: Event) {
     const fileInput = event.target as HTMLInputElement;
-    const fileName = fileInput.name.toLowerCase();
-    if (!fileName.endsWith('.csv')) {
-      console.error('Selected file is not a CSV.');
-      return;
-    }
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
       console.log('File selected:', file.name);
-
-      const reader = new FileReader();
-      reader.readAsText(file);
-
-      reader.onload = () => {
-        const csvContent = reader.result as string;
-
-        // Process and parse the CSV content here
-      };
-
-      reader.onerror = (error) => {
-        console.error('Error reading the file:', error);
-      };
+      const access_token = this.authService.getJwtToken();
+      if(access_token == null) {
+        console.error('User is not logged in.');
+        //handle this error later
+        return;
+      }
+      this.credentialsService.importCredentials(access_token, file).then((data: any) => {
+        console.log(data);
+      });
     }
   }
 }
