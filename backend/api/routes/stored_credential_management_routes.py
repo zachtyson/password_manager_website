@@ -5,7 +5,7 @@ from models.user import StoredCredential, User
 from db.session import SessionLocal
 from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared, CredUpdate
 from typing import Annotated, List
-from core.security import oauth2_scheme, secret_key, algorithm, TokenData, generate_salt
+from core.security import oauth2_scheme, secret_key, algorithm, TokenData, generate_salt, verify_password
 from jose import JWTError, jwt
 
 router = APIRouter()
@@ -289,3 +289,36 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
     setattr(credential, 'last_accessed_date', func.now())
     setattr(credential, 'last_accessed_user_id', user.id)
     db.commit()
+
+
+@router.get("/stored_credentials/verify_master_password/{credid}", response_model=bool)
+async def verify_master_password(token: Annotated[str, Depends(oauth2_scheme)]
+                                 , credid: int, master_password: str, db: Session = Depends(get_db)):
+    # jwt authorization
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
+    # make sure the credential requested to be shared exists
+    if not credential:
+        raise HTTPException(status_code=404, detail="Credential id not found")
+    owner = db.query(User).filter(User.username == token_data.username).first()
+    # make sure the api caller (user) exists and is the owner of the credential
+    if not owner:
+        raise HTTPException(status_code=404, detail="User (credential owner) not found")
+    if owner.id != credential.owner_id:
+        raise HTTPException(status_code=401, detail="Unauthorized. User making request does not match user request "
+                                                    "does not own credential to be shared")
+    # add user to credential's list of users it is shared with
+    encrypted_master_password = verify_password(master_password, credential.encrypted_master_password)
+    return encrypted_master_password
