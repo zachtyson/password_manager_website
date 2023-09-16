@@ -4,6 +4,7 @@ import {CredentialsService} from "../../core/services/credentials/credentials.se
 import {MasterPasswordDialogComponent} from "../master-password-dialog/master-password-dialog.component";
 import {Credential} from "../../core/models/saved-credential.model";
 import {MatDialog} from "@angular/material/dialog";
+import {observable} from "rxjs";
 
 @Component({
   selector: 'app-import-password',
@@ -32,9 +33,20 @@ export class ImportPasswordComponent {
             //handle this error later
             return;
           }
-          this.credentialsService.importCredentials(access_token, file,masterPassword).then((data: any) => {
-            console.log(data);
-          });
+          this.credentialsService.verifyMasterPassword(access_token, masterPassword, '')
+              .then(observable => {
+                observable.subscribe(isVerified => {
+                  if (isVerified) {
+                    this.credentialsService.importCredentials(access_token, file,masterPassword).then((data: any) => {
+                      console.log(data);
+                    });
+                  } else {
+                    console.error('Master password incorrect.');
+                    //handle this error later
+                    return;
+                  }
+                });
+              });
         }
       } else {
         return;
