@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
+from api.routes.user_login_routes import authenticate_user_username
 from models.user import StoredCredential, User
 from db.session import SessionLocal
 from schemas.stored_credential import CredCreate, CredResponse, CredInDB, CredInDBShared, CredUpdate
@@ -291,9 +294,18 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
     db.commit()
 
 
-@router.get("/stored_credentials/verify_master_password/{credid}", response_model=bool)
-async def verify_master_password(token: Annotated[str, Depends(oauth2_scheme)]
-                                 , credid: int, master_password: str, db: Session = Depends(get_db)):
+class MasterPasswordRequest(BaseModel):
+    master_password: str
+
+@router.post("/stored_credentials/verify_master_password/{credid}", response_model=bool)
+async def verify_master_password(
+        token: Annotated[str, Depends(oauth2_scheme)],
+        credid: int,
+        body: MasterPasswordRequest,
+        db: Session = Depends(get_db)
+):
+    master_password = body.master_password
+
     # jwt authorization
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -308,6 +320,7 @@ async def verify_master_password(token: Annotated[str, Depends(oauth2_scheme)]
         token_data = TokenData(username=jwt_username)
     except JWTError:
         raise credentials_exception
+
     credential = db.query(StoredCredential).filter(StoredCredential.id == credid).first()
     # make sure the credential requested to be shared exists
     if not credential:
@@ -320,5 +333,7 @@ async def verify_master_password(token: Annotated[str, Depends(oauth2_scheme)]
         raise HTTPException(status_code=401, detail="Unauthorized. User making request does not match user request "
                                                     "does not own credential to be shared")
     # add user to credential's list of users it is shared with
-    encrypted_master_password = verify_password(master_password, credential.encrypted_master_password)
-    return encrypted_master_password
+
+    # encrypted_master_password = verify_password(master_password, master_password)
+    auth = authenticate_user_username(master_password, owner.username, db)
+    return auth
