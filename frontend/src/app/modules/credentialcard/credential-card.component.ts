@@ -23,37 +23,87 @@ export class CredentialCardComponent {
               private credentialsService: CredentialsService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    console.log(this.data);
   }
 
+  alreadyVerified: boolean = false;
+
+  stringPassword: string = '********';
+
   togglePasswordVisibility(): void {
+    if(this.showPassword) {
+      this.showPassword = false;
+      return;
+    }
     this.showPassword = !this.showPassword;
+    if(this.alreadyVerified) {
+      return;
+    }
     const dialogRef = this.dialog.open(MasterPasswordDialogComponent, {
       data: { masterPassword: '' }
     });
-    let masterPassword: string = '';
+
+
+    if(!this.data?.salt || !this.data?.encrypted_password) {
+      return;
+    }
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        masterPassword = result;
-        console.log(masterPassword);
+        const masterPassword = result;
         const salt = this.data?.salt;
-        if(salt == undefined) {
-          return;
-        }
         const encryptedPassword = this.data?.encrypted_password;
-        if(encryptedPassword == undefined) {
+        const credential_id = this.data?.id;  // Assuming your data has an id property for the credential ID.
+
+        if (!salt || !encryptedPassword || !credential_id) {
           return;
         }
-        const decryptedPassword = this.credentialsService.decrypt(encryptedPassword, masterPassword, salt);
-        console.log(decryptedPassword);
-        if(this.data == undefined) {
+
+        const access_token = this.authService.getJwtToken();
+
+        if(!access_token) {
+          // User is not logged in. You can show an error message here if you want.
+          // This shouldn't happen since they would've been redirected to the login page.
+          console.error('User is not logged in');
+          this.showPassword = false;
           return;
         }
-        this.showPassword = true;
-        this.data.encrypted_password = decryptedPassword;
+        // Use verifyMasterPassword to check the masterPassword
+        this.credentialsService.verifyMasterPassword(access_token, masterPassword, credential_id.toString())
+          .then(observable => {
+            observable.subscribe(isVerified => {
+              if (isVerified) {
+                const decryptedPassword = this.credentialsService.decrypt(encryptedPassword, masterPassword, salt);
+                if (!decryptedPassword) {
+                  console.error('Decryption failed');
+                  this.showPassword = false;
+                  this.stringPassword = '********';
+                  return;
+                }
+                if (!this.data) {
+                  console.error('Credential data is null');
+                  this.showPassword = false;
+                  this.stringPassword = '********';
+                  return;
+                }
+                this.stringPassword = decryptedPassword;
+                this.showPassword = true;
+                this.alreadyVerified = true;
+              } else {
+                console.error('Master password verification failed');
+                this.showPassword = false;
+                this.stringPassword = '********';
+              }
+            });
+          })
+          .catch(error => {
+            console.error('Error getting the observable', error);
+            this.showPassword = false;
+            this.stringPassword = '********';
+          });
       } else {
         return;
       }
     });
   }
+
 }

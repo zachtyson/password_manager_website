@@ -29,7 +29,7 @@ class CredInDB(CredBase):
     added_date: datetime
     last_accessed_date: datetime
     last_accessed_user_id: int
-    folder: str
+    folder: Optional[str] = None
     shared_users: List[UserBase]
     salt: Optional[str] = None
 
@@ -70,7 +70,7 @@ class CredResponse(CredBase):
     added_date: datetime
     last_accessed_date: datetime
     last_accessed_user_id: int
-    folder: str
+    folder: Optional[str] = None
     shared_users: List[UserBase]
     url: Optional[str] = None
 

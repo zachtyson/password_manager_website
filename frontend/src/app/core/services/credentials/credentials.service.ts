@@ -4,6 +4,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {forkJoin, Observable, switchMap} from "rxjs";
 import * as CryptoJS from "crypto-js";
 import * as Papa from 'papaparse';
+import {SecurityService} from "../security/security.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import * as Papa from 'papaparse';
 export class CredentialsService {
   private API_URL = 'http://localhost:8000';
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private securityService: SecurityService) { }
 
   getCredentials(access_token: string): Observable<Credential[]> {
     // todo: verify access token once backend is implemented
@@ -94,6 +95,7 @@ export class CredentialsService {
                     nickname: nickname || undefined,
                     url: url || undefined,
                     salt: salt,
+                    added_date: new Date(), //this gets overwritten by the backend
                   };
                   return this.createCredential(access_token, newCredential);
                 })
@@ -121,4 +123,19 @@ export class CredentialsService {
       });
     });
   }
+
+  async verifyMasterPassword(access_token: string, masterPassword: string, credential_id: string) {
+    const path = `/stored_credentials/verify_master_password/${credential_id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': access_token,
+    });
+    const hashedMasterPassword = await this.securityService.hashPassword(masterPassword);
+    const body = {
+      master_password: hashedMasterPassword
+    };
+
+    return this.http.post(this.API_URL + path, body, { headers });
+  }
+
 }

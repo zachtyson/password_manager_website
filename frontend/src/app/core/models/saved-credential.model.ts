@@ -7,7 +7,7 @@ export interface Credential {
   username?: string;
   password?: string;
   email?: string;
-  added_date?: Date;
+  added_date: Date;
   last_accessed_date?: Date;
   url?: string;
   shared_users?: User[];
