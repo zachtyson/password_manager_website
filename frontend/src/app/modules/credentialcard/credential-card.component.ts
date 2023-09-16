@@ -23,7 +23,6 @@ export class CredentialCardComponent {
               private credentialsService: CredentialsService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    console.log(this.data);
   }
 
   togglePasswordVisibility(): void {
@@ -57,31 +56,33 @@ export class CredentialCardComponent {
           this.showPassword = false;
           return;
         }
-
         // Use verifyMasterPassword to check the masterPassword
-        this.credentialsService.verifyMasterPassword(access_token, masterPassword, credential_id)
-          .subscribe(isVerified => {
-            if (isVerified) {
-              const decryptedPassword = this.credentialsService.decrypt(encryptedPassword, masterPassword, salt);
-              if(!decryptedPassword) {
-                // Decryption failed. You can show an error message here if you want.
-                console.error('Decryption failed');
+        this.credentialsService.verifyMasterPassword(access_token, masterPassword, credential_id.toString())
+          .then(observable => {
+            observable.subscribe(isVerified => {
+              if (isVerified) {
+                const decryptedPassword = this.credentialsService.decrypt(encryptedPassword, masterPassword, salt);
+                if (!decryptedPassword) {
+                  console.error('Decryption failed');
+                  this.showPassword = false;
+                  return;
+                }
+                if (!this.data) {
+                  console.error('Credential data is null');
+                  return;
+                }
+                this.data.encrypted_password = decryptedPassword;
+                this.showPassword = true;
+              } else {
+                console.error('Master password verification failed');
                 this.showPassword = false;
-                return;
               }
-              if(!this.data) {
-                // This should never happen.
-                console.error('Credential data is null');
-                return;
-              }
-              this.data.encrypted_password = decryptedPassword;  // This line seems incorrect, you might be setting decrypted password to encrypted_password field.
-              this.showPassword = true;
-            } else {
-              // Master password verification failed. You can show an error message here if you want.
-              console.error('Master password verification failed');
-              this.showPassword = false;
-            }
+            });
+          })
+          .catch(error => {
+            console.error('Error getting the observable', error);
           });
+
       } else {
         return;
       }
