@@ -123,13 +123,13 @@ export class CredentialsService {
     });
   }
 
-  verifyMasterPassword(access_token: string, masterPassword: string, credential_id: number) {
+  async verifyMasterPassword(access_token: string, masterPassword: string, credential_id: string) {
     const path = `/stored_credentials/verify_master_password/${credential_id}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': access_token,
     });
-    const hashedMasterPassword = this.securityService.hashPassword(masterPassword);
+    const hashedMasterPassword = await this.securityService.hashPassword(masterPassword);
     const body = {
       master_password: hashedMasterPassword
     };
