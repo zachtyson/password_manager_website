@@ -73,13 +73,26 @@ export class CreateCredentialComponent {
             url: formValues.url || undefined,
             salt: salt,
           }
-          this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
-            this.isSubmittedSuccessfully = true;
-            this.isSubmitted = true;
-            setTimeout(() => {
-              this.router.navigate(['/dashboard']);
-            }, 500);
-          });
+          //
+          this.credentialsService.verifyMasterPassword(access_token, masterPassword, '')
+              .then(observable => {
+                observable.subscribe(isVerified => {
+                  if (isVerified) {
+                    this.credentialsService.createCredential(access_token, newCredential).subscribe(response => {
+                      this.isSubmittedSuccessfully = true;
+                      this.isSubmitted = true;
+                      setTimeout(() => {
+                        this.router.navigate(['/dashboard']);
+                      }, 500);
+                    });
+                  } else {
+                    console.error('Master password incorrect.');
+                    //handle this error later
+                    return;
+                  }
+                });
+              });
+
         });
       } else {
         return;
