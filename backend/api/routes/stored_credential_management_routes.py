@@ -297,6 +297,7 @@ async def get_credentials_shared_with(token: Annotated[str, Depends(oauth2_schem
 class MasterPasswordRequest(BaseModel):
     master_password: str
 
+
 @router.post("/stored_credentials/verify_master_password/{credid}", response_model=bool)
 async def verify_master_password(
         token: Annotated[str, Depends(oauth2_scheme)],
@@ -306,7 +307,6 @@ async def verify_master_password(
 ):
     master_password = body.master_password
 
-    # jwt authorization
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -333,6 +333,38 @@ async def verify_master_password(
         raise HTTPException(status_code=401, detail="Unauthorized. User making request does not match user request "
                                                     "does not own credential to be shared")
     # add user to credential's list of users it is shared with
+
+    # encrypted_master_password = verify_password(master_password, master_password)
+    auth = authenticate_user_username(owner.username, master_password, db)
+    return True if auth else False
+
+
+@router.post("/stored_credentials/verify_master_password/", response_model=bool)
+async def verify_master_password(
+        token: Annotated[str, Depends(oauth2_scheme)],
+        body: MasterPasswordRequest,
+        db: Session = Depends(get_db)
+):
+    master_password = body.master_password
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+
+    owner = db.query(User).filter(User.username == token_data.username).first()
+    # make sure the api caller (user) exists and is the owner of the credential
+    if not owner:
+        raise HTTPException(status_code=404, detail="User (credential owner) not found")
 
     # encrypted_master_password = verify_password(master_password, master_password)
     auth = authenticate_user_username(owner.username, master_password, db)
