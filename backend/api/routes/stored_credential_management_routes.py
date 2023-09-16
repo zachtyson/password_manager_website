@@ -335,5 +335,5 @@ async def verify_master_password(
     # add user to credential's list of users it is shared with
 
     # encrypted_master_password = verify_password(master_password, master_password)
-    auth = authenticate_user_username(master_password, owner.username, db)
-    return auth
+    auth = authenticate_user_username(owner.username, master_password, db)
+    return True if auth else False
