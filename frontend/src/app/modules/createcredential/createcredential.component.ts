@@ -72,6 +72,7 @@ export class CreateCredentialComponent {
             nickname: formValues.nickname || undefined,
             url: formValues.url || undefined,
             salt: salt,
+            added_date: new Date(), //this gets overwritten by the backend
           }
           //
           this.credentialsService.verifyMasterPassword(access_token, masterPassword, '')

@@ -95,6 +95,7 @@ export class CredentialsService {
                     nickname: nickname || undefined,
                     url: url || undefined,
                     salt: salt,
+                    added_date: new Date(), //this gets overwritten by the backend
                   };
                   return this.createCredential(access_token, newCredential);
                 })
