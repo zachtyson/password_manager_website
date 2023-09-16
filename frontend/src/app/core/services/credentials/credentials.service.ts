@@ -123,14 +123,18 @@ export class CredentialsService {
     });
   }
 
-  verifyMasterPassword(access_token: string, masterPassword: string, credential_id: number): Observable<boolean> {
-    ///stored_credentials/verify_master_password/{credid}
-    const hashedMasterPassword = this.securityService.hashPassword(masterPassword);
-    const path = '/stored_credentials/verify_master_password/' + credential_id;
+  verifyMasterPassword(access_token: string, masterPassword: string, credential_id: number) {
+    const path = `/stored_credentials/verify_master_password/${credential_id}`;
     const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
       'Authorization': access_token,
     });
-    const options = { headers: headers };
-    return this.http.post<boolean>(this.API_URL + path, { master_password: hashedMasterPassword }, options);
+    const hashedMasterPassword = this.securityService.hashPassword(masterPassword);
+    const body = {
+      master_password: hashedMasterPassword
+    };
+
+    return this.http.post(this.API_URL + path, body, { headers });
   }
+
 }
