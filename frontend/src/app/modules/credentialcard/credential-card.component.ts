@@ -25,8 +25,19 @@ export class CredentialCardComponent {
   ngOnInit(): void {
   }
 
+  alreadyVerified: boolean = false;
+
+  stringPassword: string = '********';
+
   togglePasswordVisibility(): void {
+    if(this.showPassword) {
+      this.showPassword = false;
+      return;
+    }
     this.showPassword = !this.showPassword;
+    if(this.alreadyVerified) {
+      return;
+    }
     const dialogRef = this.dialog.open(MasterPasswordDialogComponent, {
       data: { masterPassword: '' }
     });
@@ -65,24 +76,30 @@ export class CredentialCardComponent {
                 if (!decryptedPassword) {
                   console.error('Decryption failed');
                   this.showPassword = false;
+                  this.stringPassword = '********';
                   return;
                 }
                 if (!this.data) {
                   console.error('Credential data is null');
+                  this.showPassword = false;
+                  this.stringPassword = '********';
                   return;
                 }
-                this.data.encrypted_password = decryptedPassword;
+                this.stringPassword = decryptedPassword;
                 this.showPassword = true;
+                this.alreadyVerified = true;
               } else {
                 console.error('Master password verification failed');
                 this.showPassword = false;
+                this.stringPassword = '********';
               }
             });
           })
           .catch(error => {
             console.error('Error getting the observable', error);
+            this.showPassword = false;
+            this.stringPassword = '********';
           });
-
       } else {
         return;
       }
