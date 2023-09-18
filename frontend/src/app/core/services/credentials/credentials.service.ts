@@ -68,13 +68,14 @@ export class CredentialsService {
     return originalText;
   }
 
-  importCredentials(access_token: string, file:File,masterPassword: string): Promise<any> {
+  importCredentials(access_token: string, file: File, masterPassword: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const path = '/stored_credentials/add';
+      const path = '/stored_credentials/add_bulk';  // New endpoint for bulk add
       const headers = new HttpHeaders({
         'Authorization': access_token,
       });
       const options = { headers: headers };
+      let credentialsToInsert: Credential[] = [];
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
@@ -82,16 +83,17 @@ export class CredentialsService {
           console.log('Parsed Results:', results.data);
           try {
             const credentials: any[] = results.data as any[];
-            const observables = credentials.map((credential) => {
-              return this.getSalt(access_token).pipe(
-                switchMap((salt) => {
+            // Get salts for all credentials in one call
+            this.getSaltMultiple(access_token, credentials.length).pipe(
+              switchMap((salts) => {
+                credentials.forEach((credential, index) => {
                   let nickname: string = credential.name || '';
                   let username: string = credential.username || '';
                   let password: string = credential.password || '';
                   let email: string = credential.email || '';
                   let url: string = credential.url || '';
 
-                  const encryptedPassword = this.encrypt(password, masterPassword, salt);
+                  const encryptedPassword = this.encrypt(password, masterPassword, salts[index]);
                   if (encryptedPassword == null) {
                     console.error('Error encrypting password.');
                     throw new Error('Error encrypting password.');
@@ -103,36 +105,35 @@ export class CredentialsService {
                     email: email || undefined,
                     nickname: nickname || undefined,
                     url: url || undefined,
-                    salt: salt,
-                    added_date: new Date(), //this gets overwritten by the backend
+                    salt: salts[index],
+                    added_date: new Date(),
                   };
-                  return this.createCredential(access_token, newCredential);
-                })
-              );
-            });
+                  credentialsToInsert.push(newCredential);
+                });
 
-            forkJoin(observables).subscribe(
-              (results) => {
-                resolve(results);  // resolve the promise with results
+                return this.http.post(this.API_URL + path, credentialsToInsert, options);
+              })
+            ).subscribe(
+              (result) => {
+                resolve(result);
               },
               (error) => {
-                console.error('Error creating some or all credentials:', error);
-                reject(error);  // reject the promise with the error
+                console.error('Error inserting credentials:', error);
+                reject(error);
               }
             );
           } catch (e) {
             console.error('Error processing credentials:', e);
-            reject(e);  // reject the promise with the error
+            reject(e);
           }
         },
         error: (error) => {
           console.error('Error parsing CSV:', error);
-          reject(error);  // reject the promise with the parsing error
+          reject(error);
         }
       });
     });
   }
-
   async verifyMasterPassword(access_token: string, masterPassword: string, credential_id: string) {
     const path = `/stored_credentials/verify_master_password/${credential_id}`;
     const headers = new HttpHeaders({
