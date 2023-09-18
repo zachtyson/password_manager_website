@@ -48,26 +48,10 @@ export class ExportPasswordComponent {
             .then(observable => {
               observable.subscribe(isVerified => {
                 if (isVerified) {
-                  //   const decryptedPassword = this.credentialsService.decrypt(encryptedPassword, masterPassword, salt);
-                  //   if (!decryptedPassword) {
-                  //     console.error('Decryption failed');
-                  //     this.showPassword = false;
-                  //     this.stringPassword = '********';
-                  //     return;
-                  //   }
-                  //   if (!this.data) {
-                  //     console.error('Credential data is null');
-                  //     this.showPassword = false;
-                  //     this.stringPassword = '********';
-                  //     return;
-                  //   }
-                  //   this.stringPassword = decryptedPassword;
-                  //   this.showPassword = true;
-                  //   this.alreadyVerified = true;
-                  // } else {
-                  //   console.error('Master password verification failed');
-                  //   this.showPassword = false;
-                  //   this.stringPassword = '********';
+                  // Master password is correct
+                  this.credentialsService.getCredentials(access_token).subscribe(credentials => {
+                    this.credentialsService.exportPasswords(masterPassword, credentials)
+                  })
                 }
                 else {
                   console.error('Master password verification failed');
