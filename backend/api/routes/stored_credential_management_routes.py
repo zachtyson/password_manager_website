@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -79,6 +79,42 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     db.add(db_cred)
     db.commit()
     db.refresh(db_cred)
+
+
+@router.post("/stored_credentials/addBulk", status_code=201)
+async def add_credential(token: Annotated[str, Depends(oauth2_scheme)],
+                         stored_credentials: List[CredCreate],
+                         db: Session = Depends(get_db)):
+    # jwt authorization
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        jwt_username: str = payload.get("sub")
+        if jwt_username is None:
+            raise credentials_exception
+        token_data = TokenData(username=jwt_username)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.username == token_data.username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    last_db_cred = None
+    for stored_credential in stored_credentials:
+        db_cred = StoredCredential(owner_id=user.id, nickname=stored_credential.nickname,
+                                   username=stored_credential.username, email=stored_credential.email,
+                                   encrypted_password=stored_credential.password, url=stored_credential.url,
+                                   salt=stored_credential.salt, last_accessed_user_id=user.id)
+        # add credential to database
+        db.add(db_cred)
+        last_db_cred = db_cred
+    db.commit()
+    if last_db_cred:
+        db.refresh(last_db_cred)
 
 
 # shares a user's saved credential with another user
