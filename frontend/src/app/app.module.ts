@@ -24,6 +24,7 @@ import { MasterPasswordDialogComponent } from './modules/master-password-dialog/
 import {MatDialogModule} from "@angular/material/dialog";
 import { ImportPasswordComponent } from './modules/import-password/import-password.component';
 import { ExportPasswordComponent } from './modules/export-password/export-password.component';
+import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-decision.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ExportPasswordComponent } from './modules/export-password/export-passwo
     CreateCredentialComponent,
     MasterPasswordDialogComponent,
     ImportPasswordComponent,
-    ExportPasswordComponent
+    ExportPasswordComponent,
+    ConfirmDecisionComponent
   ],
   imports: [
     BrowserModule,
