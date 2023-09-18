@@ -37,9 +37,7 @@ export class ImportPasswordComponent {
               .then(observable => {
                 observable.subscribe(isVerified => {
                   if (isVerified) {
-                    this.credentialsService.importCredentials(access_token, file,masterPassword).then((data: any) => {
-                      console.log(data);
-                    });
+                    this.credentialsService.importCredentials(access_token, file,masterPassword)
                   } else {
                     console.error('Master password incorrect.');
                     //handle this error later
