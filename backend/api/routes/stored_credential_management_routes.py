@@ -105,7 +105,7 @@ async def add_credential(token: Annotated[str, Depends(oauth2_scheme)], stored_c
     db.refresh(db_cred)
 
 
-@router.post("/stored_credentials/addBulk", status_code=201)
+@router.post("/stored_credentials/add_bulk", status_code=201)
 async def add_credential(token: Annotated[str, Depends(oauth2_scheme)],
                          stored_credentials: List[CredCreate],
                          db: Session = Depends(get_db)):
