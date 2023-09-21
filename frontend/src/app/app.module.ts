@@ -25,6 +25,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { ImportPasswordComponent } from './modules/import-password/import-password.component';
 import { ExportPasswordComponent } from './modules/export-password/export-password.component';
 import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-decision.component';
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,7 @@ import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-dec
     MasterPasswordDialogComponent,
     ImportPasswordComponent,
     ExportPasswordComponent,
-    ConfirmDecisionComponent
+    ConfirmDecisionComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +57,8 @@ import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-dec
     MatToolbarModule,
     MatIconModule,
     MatDialogModule,
+    MatOptionModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
