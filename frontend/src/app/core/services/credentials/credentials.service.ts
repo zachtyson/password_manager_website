@@ -216,7 +216,16 @@ export class CredentialsService {
     return this.http.post(this.API_URL + path, body, { headers });
   }
 
-  async exportPasswords(masterPassword: string, credentials: Credential[]) {
+  async exportPasswords(masterPassword: string, credentials: Credential[], fileExtension: string) {
+    if(fileExtension.toLowerCase() === '.csv') {
+      await this.exportPasswordsCSV(masterPassword, credentials);
+    }
+    else if(fileExtension.toLowerCase() === '.json') {
+      await this.exportPasswordsJSON(masterPassword, credentials);
+    }
+  }
+
+  async exportPasswordsCSV(masterPassword: string, credentials: Credential[]) {
     const csvColumns = ['name', 'username', 'password', 'email', 'url'];
     const csvData = credentials.map(cred => {
       let p:string;
@@ -249,5 +258,35 @@ export class CredentialsService {
     link.click();
     document.body.removeChild(link);
   }
+
+  async exportPasswordsJSON(masterPassword: string, credentials: Credential[]) {
+    const jsonData = credentials.map(cred => {
+      let p: string;
+      if (!cred.salt) {
+        p = '';
+      } else {
+        p = cred.encrypted_password ? this.decrypt(cred.encrypted_password, masterPassword, cred.salt) : '';
+      }
+      return {
+        name: cred.nickname,
+        username: cred.username,
+        password: p,
+        email: cred.email,
+        url: cred.url
+      };
+    });
+
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8;' }); // added indentation for readability
+    const link = document.createElement('a');
+
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'credentials.json');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
 
 }
