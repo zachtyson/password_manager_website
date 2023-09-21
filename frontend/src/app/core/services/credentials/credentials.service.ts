@@ -69,6 +69,10 @@ export class CredentialsService {
   }
 
   importCredentials(access_token: string, file: File, masterPassword: string): Promise<any> {
+    if(!file) {
+      console.error('No file selected.');
+      return Promise.reject('No file selected.');
+    }
     return new Promise((resolve, reject) => {
       const path = '/stored_credentials/add_bulk';  // New endpoint for bulk add
       const headers = new HttpHeaders({
@@ -76,62 +80,72 @@ export class CredentialsService {
       });
       const options = { headers: headers };
       let credentialsToInsert: Credential[] = [];
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          console.log('Parsed Results:', results.data);
-          try {
-            const credentials: any[] = results.data as any[];
-            // Get salts for all credentials in one call
-            this.getSaltMultiple(access_token, credentials.length).pipe(
-              switchMap((salts) => {
-                credentials.forEach((credential, index) => {
-                  let nickname: string = credential.name || '';
-                  let username: string = credential.username || '';
-                  let password: string = credential.password || '';
-                  let email: string = credential.email || '';
-                  let url: string = credential.url || '';
+      const fileExtension = file.name.split('.').pop();
+      if(fileExtension === 'csv') {
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            console.log('Parsed Results:', results.data);
+            try {
+              const credentials: any[] = results.data as any[];
+              // Get salts for all credentials in one call
+              this.getSaltMultiple(access_token, credentials.length).pipe(
+                switchMap((salts) => {
+                  credentials.forEach((credential, index) => {
+                    let nickname: string = credential.name || '';
+                    let username: string = credential.username || '';
+                    let password: string = credential.password || '';
+                    let email: string = credential.email || '';
+                    let url: string = credential.url || '';
 
-                  const encryptedPassword = this.encrypt(password, masterPassword, salts[index]);
-                  if (encryptedPassword == null) {
-                    console.error('Error encrypting password.');
-                    throw new Error('Error encrypting password.');
-                  }
+                    const encryptedPassword = this.encrypt(password, masterPassword, salts[index]);
+                    if (encryptedPassword == null) {
+                      console.error('Error encrypting password.');
+                      throw new Error('Error encrypting password.');
+                    }
 
-                  let newCredential: Credential = {
-                    password: encryptedPassword,
-                    username: username || undefined,
-                    email: email || undefined,
-                    nickname: nickname || undefined,
-                    url: url || undefined,
-                    salt: salts[index],
-                    added_date: new Date(),
-                  };
-                  credentialsToInsert.push(newCredential);
-                });
+                    let newCredential: Credential = {
+                      password: encryptedPassword,
+                      username: username || undefined,
+                      email: email || undefined,
+                      nickname: nickname || undefined,
+                      url: url || undefined,
+                      salt: salts[index],
+                      added_date: new Date(),
+                    };
+                    credentialsToInsert.push(newCredential);
+                  });
 
-                return this.http.post(this.API_URL + path, credentialsToInsert, options);
-              })
-            ).subscribe(
-              (result) => {
-                resolve(result);
-              },
-              (error) => {
-                console.error('Error inserting credentials:', error);
-                reject(error);
-              }
-            );
-          } catch (e) {
-            console.error('Error processing credentials:', e);
-            reject(e);
+                  return this.http.post(this.API_URL + path, credentialsToInsert, options);
+                })
+              ).subscribe(
+                (result) => {
+                  resolve(result);
+                },
+                (error) => {
+                  console.error('Error inserting credentials:', error);
+                  reject(error);
+                }
+              );
+            } catch (e) {
+              console.error('Error processing credentials:', e);
+              reject(e);
+            }
+          },
+          error: (error) => {
+            console.error('Error parsing CSV:', error);
+            reject(error);
           }
-        },
-        error: (error) => {
-          console.error('Error parsing CSV:', error);
-          reject(error);
-        }
-      });
+        });
+      }
+      else if (fileExtension === 'json') {
+
+      }
+      else {
+        console.error('Invalid file type.');
+        reject('Invalid file type.');
+      }
     });
   }
   async verifyMasterPassword(access_token: string, masterPassword: string, credential_id: string) {
