@@ -25,6 +25,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { ImportPasswordComponent } from './modules/import-password/import-password.component';
 import { ExportPasswordComponent } from './modules/export-password/export-password.component';
 import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-decision.component';
+import { ChooseFileTypeComponent } from './modules/export-password/choose-file-type/choose-file-type.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-dec
     MasterPasswordDialogComponent,
     ImportPasswordComponent,
     ExportPasswordComponent,
-    ConfirmDecisionComponent
+    ConfirmDecisionComponent,
+    ChooseFileTypeComponent
   ],
   imports: [
     BrowserModule,
