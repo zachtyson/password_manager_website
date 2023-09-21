@@ -140,7 +140,62 @@ export class CredentialsService {
         });
       }
       else if (fileExtension === 'json') {
+        //Javascript inherently supports JSON parsing
+        let reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const parsedData = JSON.parse(reader.result as string);
+            const credentials: any[] = parsedData as any[];
 
+            // The rest of your processing logic here...
+            this.getSaltMultiple(access_token, credentials.length).pipe(
+              switchMap((salts) => {
+                credentials.forEach((credential, index) => {
+                  let nickname: string = credential.name || '';
+                  let username: string = credential.username || '';
+                  let password: string = credential.password || '';
+                  let email: string = credential.email || '';
+                  let url: string = credential.url || '';
+
+                  const encryptedPassword = this.encrypt(password, masterPassword, salts[index]);
+                  if (encryptedPassword == null) {
+                    console.error('Error encrypting password.');
+                    throw new Error('Error encrypting password.');
+                  }
+
+                  let newCredential: Credential = {
+                    password: encryptedPassword,
+                    username: username || undefined,
+                    email: email || undefined,
+                    nickname: nickname || undefined,
+                    url: url || undefined,
+                    salt: salts[index],
+                    added_date: new Date(),
+                  };
+                  credentialsToInsert.push(newCredential);
+                });
+
+                return this.http.post(this.API_URL + path, credentialsToInsert, options);
+              })
+            ).subscribe(
+              (result) => {
+                resolve(result);
+              },
+              (error) => {
+                console.error('Error inserting credentials:', error);
+                reject(error);
+              }
+            );
+          } catch (e) {
+            console.error('Error processing JSON data:', e);
+            reject(e);
+          }
+        };
+        reader.onerror = (error) => {
+          console.error('Error reading JSON file:', error);
+          reject(error);
+        };
+        reader.readAsText(file);
       }
       else {
         console.error('Invalid file type.');
