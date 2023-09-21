@@ -4,6 +4,7 @@ import {AuthService} from "../../core/services/auth/auth.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDecisionComponent} from "../confirm-decision/confirm-decision.component";
 import {MasterPasswordDialogComponent} from "../master-password-dialog/master-password-dialog.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-export-password',
@@ -13,6 +14,8 @@ import {MasterPasswordDialogComponent} from "../master-password-dialog/master-pa
 export class ExportPasswordComponent {
   constructor(private credentialsService: CredentialsService, private authService: AuthService, private dialog: MatDialog) {
   }
+
+  public exportFormat: string = '.csv';
 
   onExportPassword() {
     console.log('Exporting password');
