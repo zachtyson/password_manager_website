@@ -86,7 +86,6 @@ export class CredentialsService {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            console.log('Parsed Results:', results.data);
             try {
               const credentials: any[] = results.data as any[];
               // Get salts for all credentials in one call
