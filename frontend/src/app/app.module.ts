@@ -25,7 +25,6 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { ImportPasswordComponent } from './modules/import-password/import-password.component';
 import { ExportPasswordComponent } from './modules/export-password/export-password.component';
 import { ConfirmDecisionComponent } from './modules/confirm-decision/confirm-decision.component';
-import { ChooseFileTypeComponent } from './modules/export-password/choose-file-type/choose-file-type.component';
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
 
@@ -43,7 +42,6 @@ import {MatSelectModule} from "@angular/material/select";
     ImportPasswordComponent,
     ExportPasswordComponent,
     ConfirmDecisionComponent,
-    ChooseFileTypeComponent
   ],
   imports: [
     BrowserModule,
