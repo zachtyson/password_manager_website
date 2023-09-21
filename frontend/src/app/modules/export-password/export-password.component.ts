@@ -54,7 +54,7 @@ export class ExportPasswordComponent {
                   // Master password is correct
 
                   this.credentialsService.getCredentials(access_token).subscribe(credentials => {
-                    this.credentialsService.exportPasswords(masterPassword, credentials)
+                    this.credentialsService.exportPasswords(masterPassword, credentials, this.exportFormat)
                   })
                 }
                 else {
